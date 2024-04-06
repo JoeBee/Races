@@ -1,4 +1,28 @@
-
+document.addEventListener("DOMContentLoaded", function () {
+  fetch("races.json")
+    .then((response) => response.json())
+    .then((data) => {
+      const tableBody = document.getElementById("tableBody");
+      tableBody.innerHTML = "";
+      data.forEach((rowData) => {
+        const row = document.createElement("tr");
+        Object.keys(rowData).forEach((key) => {
+          const cell = document.createElement("td");
+          if (key === "Link") {
+            const link = rowData[key][0];
+            cell.innerHTML = `<a href="${link.URL}" target="_blank">${link.Desc}</a>`;
+          } else if (key === "Images" || key === "BackupImages") {
+            cell.innerHTML = rowData[key].join(", ");
+          } else {
+            cell.textContent = rowData[key];
+          }
+          row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+      });
+    })
+    .catch((error) => console.error("Error fetching data:", error));
+});
 
 function sortTable(columnIndex) {
   const table = document.getElementById("dataTable");
