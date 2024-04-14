@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("* DOMContentLoaded");
   fetch("races.json")
     .then((response) => response.json())
     .then((data) => {
@@ -9,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
       // let checkBoxHtml =
       //   `<input type='checkbox' disabled='disabled' ${(key.IsMarathon === 'TRUE' ? 'checked' : '')}>`;
 
-      console.log("* data", data);
       data.forEach((rowData) => {
         // console.log("* rowData", rowData);
         /* *** rowData
@@ -30,6 +28,9 @@ document.addEventListener("DOMContentLoaded", function () {
           const keyValue = rowData[key];
           const cell = document.createElement("td");
 
+          // if (key === "OverallOrder") {
+          //   cell.textContent = parseInt(rowData[key]);
+          // }
           if (key === "Link") {
             const link = rowData[key][0];
             if (link) {
@@ -57,13 +58,39 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch((error) => console.error("Error fetching data:", error));
 });
 
+// ----------------------------------------------------------
+
+let colAscending = [false, false, false, false, false, false, false];
+
 function sortTable(columnIndex) {
+  let sortOrder = colAscending[columnIndex] === true ? false : true;
+  colAscending[columnIndex] = sortOrder;
+
   const table = document.getElementById("dataTable");
   const rows = Array.from(table.getElementsByTagName("tr"));
+  console.log("* sort rows", rows);
+  /*
+      0  Overall Order	
+      1. Marathon Number
+      2. Race Name
+      3. Date	
+      4. Finish Time	
+      5. Is Marathon
+      6. Official Entrant
+*/
+
   const sortedRows = rows.slice(1).sort((a, b) => {
-    const aValue = a.getElementsByTagName("td")[columnIndex].textContent;
-    const bValue = b.getElementsByTagName("td")[columnIndex].textContent;
-    return aValue.localeCompare(bValue);
+    let aValue = a.getElementsByTagName("td")[columnIndex].textContent;
+    let bValue = b.getElementsByTagName("td")[columnIndex].textContent;
+    if (columnIndex == 0 || columnIndex == 1) {
+      var intA = parseInt(aValue);
+      var intB = parseInt(bValue);
+      if (sortOrder) return intB - intA;
+      else return intA - intB;
+    } else {
+      if (sortOrder) return aValue.localeCompare(bValue);
+      else return bValue.localeCompare(aValue);
+    }
   });
   const tbody = table.getElementsByTagName("tbody")[0];
   sortedRows.forEach((row) => tbody.appendChild(row));
