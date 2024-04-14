@@ -1,10 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOMContentLoaded");
+  console.log("* DOMContentLoaded");
   fetch("races.json")
-    .then((response) => response.json())
+    .then((response) => {
+      console.log("* data");
+      response.json();
+    })
     .then((data) => {
+      console.log("* data");
       const tableBody = document.getElementById("tableBody");
-      console.log("tableBody", tableBody);
+      console.log("* tableBody", tableBody);
       tableBody.innerHTML = "";
       data.forEach((rowData) => {
         const row = document.createElement("tr");
