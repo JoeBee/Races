@@ -6,12 +6,30 @@ document.addEventListener("DOMContentLoaded", function () {
       const tableBody = document.getElementById("tableBody");
       tableBody.innerHTML = "";
 
+      // let checkBoxHtml =
+      //   `<input type='checkbox' disabled='disabled' ${(key.IsMarathon === 'TRUE' ? 'checked' : '')}>`;
+
       console.log("* data", data);
       data.forEach((rowData) => {
-        console.log("* rowData", rowData);
+        // console.log("* rowData", rowData);
+        /* *** rowData
+          BackupImages: (3) ['232c.jpg', '232b.jpg', '232a.jpg']
+          Date: "11/15/2015"
+          FinishTime: "4:40:00"
+          Images: []
+          IsMarathon: "TRUE"
+          Link: [{…}]
+          MarathonNumber: "232"
+          OfficialEntrant: "TRUE"
+          OverallOrder: "240"
+          RaceName: "Myles Standish Marathon"
+          String: "3    Joe Beyer     
+        */
         const row = document.createElement("tr");
         Object.keys(rowData).forEach((key) => {
+          const keyValue = rowData[key];
           const cell = document.createElement("td");
+
           if (key === "Link") {
             const link = rowData[key][0];
             if (link) {
@@ -19,9 +37,18 @@ document.addEventListener("DOMContentLoaded", function () {
             }
           } else if (key === "Images" || key === "BackupImages") {
             cell.innerHTML = rowData[key].join(", ");
+          } else if (key === "IsMarathon") {
+            cell.innerHTML = `<input type='checkbox' disabled='disabled' ${
+              keyValue === "TRUE" ? "checked" : ""
+            }>`;
+          } else if (key === "OfficialEntrant") {
+            cell.innerHTML = `<input type='checkbox' disabled='disabled' ${
+              keyValue === "TRUE" ? "checked" : ""
+            }>`;
           } else {
             cell.textContent = rowData[key];
           }
+
           row.appendChild(cell);
         });
         tableBody.appendChild(row);
