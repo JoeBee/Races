@@ -1074,34 +1074,8 @@
             "73b.jpg"
         ]
     },
-    {
-        "OverallOrder": "75",
-        "MarathonNumber": "74",
-        "RaceName": "Boston Marathon",
-        "Date": "4/19/2004",
-        "FinishTime": "~3:58:05",
-        "IsMarathon": "TRUE",
-        "OfficialEntrant": "FALSE",
-        "String": "                                               <br/>  5k      10k     15k     20k    Half     25k     30k     35k     40k <br/>0:24:46 0:49:54 1:16:18 1:43:39 1:49:15 2:11:45 2:41:24 3:12:42 3:43:21 <br/>StartTimeOffset Pace   OfficialTime NetTime Overall Gender Division <br/>    03:11      0:09:05    4:01:16   3:58:05   5658   4518    474  <br/>",
-        "Link": [],
-        "Images": []
-    },
-    {
-        "OverallOrder": "76",
-        "MarathonNumber": "75",
-        "RaceName": "Walter Childs Race of Champions",
-        "Date": "5/2/2004",
-        "FinishTime": "3:44:36",
-        "IsMarathon": "TRUE",
-        "OfficialEntrant": "TRUE",
-        "String": "31 3:44:36 Joe Beyer 41M Concord MA",
-        "Link": [],
-        "Images": [
-            "75a.jpg",
-            "75b.jpg",
-            "75c.jpg"
-        ]
-    },
+
+    
     {
         "OverallOrder": "77",
         "MarathonNumber": "76",
