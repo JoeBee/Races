@@ -14,7 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
           const cell = document.createElement("td");
           if (key === "Link") {
             const link = rowData[key][0];
-            cell.innerHTML = `<a href="${link.URL}" target="_blank">${link.Desc}</a>`;
+            if (link) {
+              cell.innerHTML = `<a href="${link.URL}" target="_blank">${link.Desc}</a>`;
+            }
           } else if (key === "Images" || key === "BackupImages") {
             cell.innerHTML = rowData[key].join(", ");
           } else {
