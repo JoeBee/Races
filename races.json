@@ -1047,36 +1047,7 @@
             "71c.jpg"
         ]
     },
-    {
-        "OverallOrder": "73",
-        "MarathonNumber": "72",
-        "RaceName": "Stone Cat Ale Trail Race",
-        "Date": "11/8/2003",
-        "FinishTime": "4:51:37",
-        "IsMarathon": "TRUE",
-        "OfficialEntrant": "TRUE",
-        "String": "Place Name      Gender Age State  Time<br/>37    Joe Beyer   M    41   MA   4:51:37",
-        "Link": [],
-        "Images": []
-    },
-    {
-        "OverallOrder": "74",
-        "MarathonNumber": "73",
-        "RaceName": "Hyannis Cape Cod Times Marathon",
-        "Date": "2/29/2004",
-        "FinishTime": "3:43:32",
-        "IsMarathon": "TRUE",
-        "OfficialEntrant": "TRUE",
-        "String": " Pl Div/Tot Div   NETTIME PACE GunTm   AG S RACE#HOMETOWN   TEAM<br/>86 26/54   M4049 3:43:32 8:32 3:43:37 41M  46   Concord MA Concord Rnrs",
-        "Link": [],
-        "Images": [
-            "73a.jpg",
-            "73b.jpg"
-        ]
-    },
-
-    
-    {
+ {
         "OverallOrder": "77",
         "MarathonNumber": "76",
         "RaceName": "Nipmuck Trail Marathon",
