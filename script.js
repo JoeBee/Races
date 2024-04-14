@@ -1,12 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   console.log("* DOMContentLoaded");
   fetch("races.json")
-    .then((response) => {
-      console.log("* data");
-      response.json();
-    })
+    .then((response) => response.json())
     .then((data) => {
-      console.log("* data");
       const tableBody = document.getElementById("tableBody");
       console.log("* tableBody", tableBody);
       tableBody.innerHTML = "";
