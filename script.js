@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOMContentLoaded");
   fetch("races.json")
     .then((response) => response.json())
     .then((data) => {
       const tableBody = document.getElementById("tableBody");
+      console.log("tableBody", tableBody);
       tableBody.innerHTML = "";
       data.forEach((rowData) => {
         const row = document.createElement("tr");
