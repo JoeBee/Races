@@ -4,9 +4,11 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((response) => response.json())
     .then((data) => {
       const tableBody = document.getElementById("tableBody");
-      console.log("* tableBody", tableBody);
       tableBody.innerHTML = "";
+
+      console.log("* data", data);
       data.forEach((rowData) => {
+        console.log("* rowData", rowData);
         const row = document.createElement("tr");
         Object.keys(rowData).forEach((key) => {
           const cell = document.createElement("td");
