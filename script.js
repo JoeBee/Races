@@ -63,8 +63,8 @@ document.addEventListener("DOMContentLoaded", function () {
 let colAscending = [false, false, false, false, false, false, false];
 
 function sortTable(columnIndex) {
-  let sortOrder = colAscending[columnIndex] === true ? false : true;
-  colAscending[columnIndex] = sortOrder;
+  let sortAscending = colAscending[columnIndex] === true ? false : true;
+  colAscending[columnIndex] = sortAscending;
 
   const table = document.getElementById("dataTable");
   const rows = Array.from(table.getElementsByTagName("tr"));
@@ -82,16 +82,58 @@ function sortTable(columnIndex) {
   const sortedRows = rows.slice(1).sort((a, b) => {
     let aValue = a.getElementsByTagName("td")[columnIndex].textContent;
     let bValue = b.getElementsByTagName("td")[columnIndex].textContent;
+
     if (columnIndex == 0 || columnIndex == 1) {
       var intA = parseInt(aValue);
       var intB = parseInt(bValue);
-      if (sortOrder) return intB - intA;
+      if (sortAscending) return intB - intA;
       else return intA - intB;
+    }
+    if (columnIndex == 3) {
+      if (isValidDate(aValue) && isValidDate(bValue)) {
+        let dateA = parseDate(aValue);
+        let dateB = parseDate(bValue);
+        return dateA - dateB;
+      }
+      if (sortAscending) return aValue.localeCompare(bValue);
+      else return bValue.localeCompare(aValue);
+    }
+    if (columnIndex == 4) {
+      var timeA = parseTime(aValue);
+      var timeB = parseTime(bValue);
+      if (sortAscending) return timeA - timeB;
+      else return timeB - timeA;
     } else {
-      if (sortOrder) return aValue.localeCompare(bValue);
+      if (sortAscending) return aValue.localeCompare(bValue);
       else return bValue.localeCompare(aValue);
     }
   });
   const tbody = table.getElementsByTagName("tbody")[0];
   sortedRows.forEach((row) => tbody.appendChild(row));
+}
+
+function isValidDate(dateString) {
+  // Check if Date.parse() returns a valid date (not NaN) and the parsed date is not equal to "Invalid Date"
+  return (
+    !isNaN(Date.parse(dateString)) && new Date(dateString) !== "Invalid Date"
+  );
+}
+
+function parseDate(dateString) {
+  var parts = dateString.split("/");
+  // Note: months are 0-based in JavaScript Date, so we need to subtract 1
+  return new Date(parts[2], parts[0] - 1, parts[1]);
+}
+
+function parseTime(timeString) {
+  timeString = timeString.replace("~", "");
+  timeString = timeString.replace("?", "0");
+  timeString = timeString.replace("x", "0");
+  timeString = timeString.replace("~unknown~", "");
+  timeString = timeString.replace("unknown~", "");
+  let parts = timeString.split(":");
+  if (!parts.length == 2) parts.push("00");
+
+  // if (!parts[2]) console.log("* timeString:", timeString);
+  return new Date(1970, 0, 1, parts[0], parts[1], parts[2]);
 }
