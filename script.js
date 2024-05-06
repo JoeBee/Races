@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
               outputHtml += `<a href="/Races/marathonPix/${x}" target="_blank">${x}</a>`;
               if (charCounter > 95) {
-                outputHtml += `</br>`;
+                outputHtml += `<br>`;
                 charCounter = 0;
               }
             });
