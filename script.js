@@ -39,13 +39,19 @@ document.addEventListener("DOMContentLoaded", function () {
           } else if (key === "Images" || key === "BackupImages") {
             let imgs = rowData[key];
             let outputHtml = "";
+            let charCounter = 0;
             imgs.forEach((x) => {
               // outputHtml += `<img src="/marathonPix/${x}" alt="${x}"> `;
-              outputHtml += `<a href="/Races/marathonPix/${x}" target="_blank">${x}</a>&nbsp`;
+              charCounter = charCounter + x.length;
+
+              outputHtml += `<a href="/Races/marathonPix/${x}" target="_blank">${x}</a>`;
+              if (charCounter > 95) {
+                outputHtml += `</br>`;
+                charCounter = 0;
+              }
             });
             cell.innerHTML = outputHtml; // rowData[key].join(", ");
-            console.log("* Images", key, imgs);
-            //  <img src="path_to_your_image.jpg" alt="Description of the image" width="300" height="200">
+            // console.log("* Images", key, imgs);
           } else if (key === "IsMarathon") {
             cell.innerHTML = `<input type='checkbox' disabled='disabled' ${
               keyValue === "TRUE" ? "checked" : ""
