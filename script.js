@@ -37,7 +37,15 @@ document.addEventListener("DOMContentLoaded", function () {
               cell.innerHTML = `<a href="${link.URL}" target="_blank">${link.Desc}</a>`;
             }
           } else if (key === "Images" || key === "BackupImages") {
-            cell.innerHTML = rowData[key].join(", ");
+            let imgs = rowData[key];
+            let outputHtml = "";
+            imgs.forEach((x) => {
+              // outputHtml += `<img src="/marathonPix/${x}" alt="${x}"> `;
+              outputHtml += `<a href="/marathonPix/${x}" target="_blank">${x}</a>&nbsp`;
+            });
+            cell.innerHTML = outputHtml; // rowData[key].join(", ");
+            console.log("* Images", key, imgs);
+            //  <img src="path_to_your_image.jpg" alt="Description of the image" width="300" height="200">
           } else if (key === "IsMarathon") {
             cell.innerHTML = `<input type='checkbox' disabled='disabled' ${
               keyValue === "TRUE" ? "checked" : ""
