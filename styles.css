@@ -5,13 +5,12 @@ body {
 table {
     font-family: Verdana, Arial, sans-serif;
     font-size: 10px;
-}
 
-table {
     border-collapse: collapse;
     width: 100%;
 }
 
+/* 
 th,
 td {
     border: 1px solid #dddddd;
@@ -19,10 +18,30 @@ td {
     padding: 8px;
 }
 
-th {
-    cursor: pointer;
-}
-
 tr:nth-child(even) {
     background-color: #f2f2f2;
+} */
+
+th {
+    cursor: pointer;
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+    transition: background-color 0.3s ease;
+}
+
+/* Change background color on hover */
+th:hover {
+    background-color: #e0e0e0;
+}
+
+/* Optional: Style for even table rows */
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Optional: Style for odd table rows */
+tr:nth-child(odd) {
+    background-color: #ffffff;
 }

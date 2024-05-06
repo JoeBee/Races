@@ -45,7 +45,9 @@ document.addEventListener("DOMContentLoaded", function () {
               charCounter = charCounter + x.length;
 
               outputHtml += `<a href="/Races/marathonPix/${x}" target="_blank">${x}</a>`;
-              if (charCounter > 95) {
+
+              // Limit how many images before newline
+              if (charCounter > 85) {
                 outputHtml += `<br>`;
                 charCounter = 0;
               }
