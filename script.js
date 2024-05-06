@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let outputHtml = "";
             imgs.forEach((x) => {
               // outputHtml += `<img src="/marathonPix/${x}" alt="${x}"> `;
-              outputHtml += `<a href="/marathonPix/${x}" target="_blank">${x}</a>&nbsp`;
+              outputHtml += `<a href="/Races/marathonPix/${x}" target="_blank">${x}</a>&nbsp`;
             });
             cell.innerHTML = outputHtml; // rowData[key].join(", ");
             console.log("* Images", key, imgs);
