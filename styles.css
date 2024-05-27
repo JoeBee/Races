@@ -2,25 +2,20 @@ body {
     font-family: Verdana, Arial, sans-serif;
 }
 
+/* ---------------------------------------------- */
+/* Table styles                                   */
+
+
 table {
     font-family: Verdana, Arial, sans-serif;
     font-size: 10px;
 
     border-collapse: collapse;
     width: 100%;
+    table-layout: fixed;
+    /* Fixed table layout */
 }
 
-/* 
-th,
-td {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-} */
 
 th {
     cursor: pointer;
@@ -45,3 +40,124 @@ tr:nth-child(even) {
 tr:nth-child(odd) {
     background-color: #ffffff;
 }
+
+/* ---------------------------------------------- */
+
+/* Styles for checkboxes with indeterminate state */
+.tri-state-checkbox:indeterminate+label::before {
+    content: "-";
+    color: black;
+}
+
+/* Styles for checked state */
+.tri-state-checkbox:checked+label::before {
+    content: "✓";
+    color: green;
+}
+
+/* Styles for unchecked state */
+.tri-state-checkbox:not(:checked):not(:indeterminate)+label::before {
+    content: "×";
+    color: red;
+}
+
+/* ---------------------------------------------- */
+
+/* .colWidth1 {
+    width: 5%;
+}
+
+.colWidth2 {
+    width: 5%;
+}
+
+.colWidth3 {
+    width: 10%;
+}
+
+.colWidth4 {
+    width: 15%;
+}
+
+.colWidth5 {
+    width: 8%;
+}
+
+.colWidth6 {
+    width: 8%;
+}
+
+.colWidth7 {
+    width: 8%;
+}
+
+.colWidth8 {
+    width: 12%;
+}
+
+.colWidth9 {
+    width: 12%;
+}
+
+.colWidth10 {
+    width: 17%;
+} */
+
+
+
+/* TESTING FOLLOWS */
+
+/* Set fixed widths for each column */
+th:nth-child(1),
+td:nth-child(1) {
+    width: 5%;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+    width: 5%;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+    width: 10%;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+    width: 15%;
+}
+
+th:nth-child(5),
+td:nth-child(5) {
+    width: 8%;
+}
+
+th:nth-child(6),
+td:nth-child(6) {
+    width: 8%;
+}
+
+th:nth-child(7),
+td:nth-child(7) {
+    width: 8%;
+}
+
+th:nth-child(8),
+td:nth-child(8) {
+    width: 12%;
+}
+
+th:nth-child(9),
+td:nth-child(9) {
+    width: 12%;
+}
+
+th:nth-child(10),
+td:nth-child(10) {
+    width: 17%;
+}
+
+
+
+/* ---------------------------------------------- */

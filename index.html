@@ -2,8 +2,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <!-- <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"> -->
     <title>Joe's Races</title>
     <link rel="stylesheet"
           href="styles.css">
@@ -13,20 +13,36 @@
     <table id="dataTable">
         <thead>
             <tr>
-                <th onclick="sortTable(0)">Overall Order</th>
-                <th onclick="sortTable(1)">Marathon Number</th>
-                <th onclick="sortTable(2)">Race Name</th>
-                <th onclick="sortTable(3)">Date</th>
-                <th onclick="sortTable(4)">Finish Time</th>
-                <th onclick="sortTable(5)">Is Marathon</th>
-                <th onclick="sortTable(6)">Official Entrant</th>
+
+                <th onclick="sortTable('OverallOrder')">Overall Order</th>
+                <th onclick="sortTable('MarathonNumber')">Marathon Number</th>
+                <th onclick="sortTable('RaceName')">Race Name</th>
+                <th onclick="sortTable('Date')">Date</th>
+                <th onclick="sortTable('FinishTime')">Finish Time</th>
+                <th>Marathon?<input type="checkbox"
+                           class="tri-state-checkbox"
+                           id="IsMarathon"
+                           onclick="checkBoxClicked('IsMarathon')"
+                           checked></th>
+                <th>Official Entrant?<input type="checkbox"
+                           class="tri-state-checkbox"
+                           id="OfficialEntrant"
+                           onclick="checkBoxClicked('OfficialEntrant')"
+                           checked></th>
+                <!-- check-box state   -->
+                <!-- <th>Official Entrant?<input type="checkbox"
+                        class="tri-state-checkbox"
+                        id="OfficialEntrant"
+                        onclick="checkBoxClicked('OfficialEntrant')"></th> -->
+                <!-- <input id="checkboxState"
+                           value=""> -->
                 <th>Link</th>
                 <th>Images</th>
                 <th>Backup Images</th>
             </tr>
         </thead>
         <tbody id="tableBody">
-            <!-- Table data will be inserted here -->
+            <!-- Table data is dynamically inserted here -->
         </tbody>
     </table>
     <script src="script.js"></script>
