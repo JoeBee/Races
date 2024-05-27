@@ -99,17 +99,16 @@ function filterDatacheck() {
       const columnValue = item[Object.keys(item)[colIndexMar]];
       return columnValue !== "TRUE";
     });
+    console.log(" - Mar post count", rtnData.length);
   }
 
   if (!elyOfficialEntrant.checked) {
-    console.log(" - official is checked");
-    console.log(" - pre count", rtnData.length);
     let colIndexOff = colsAry.indexOf("OfficialEntrant");
     rtnData = rtnData.filter((item) => {
       const columnValue = item[Object.keys(item)[colIndexOff]];
       return columnValue !== "TRUE";
     });
-    console.log(" - post count", rtnData.length);
+    console.log(" - Off post count", rtnData.length);
   }
 
   return rtnData;
