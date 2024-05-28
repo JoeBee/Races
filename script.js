@@ -1,4 +1,5 @@
 let MarathonDataAll = []; // Read once upon page load
+let MarathonDataOriginal = []; // Used in resets to clear sort order
 let colAscending = [false, false, false, false, false, false, false];
 
 const colsAry = [
@@ -22,6 +23,8 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((response) => response.json())
     .then((data) => {
       MarathonDataAll = data;
+      MarathonDataOriginal = JSON.parse(JSON.stringify(data)); // Break the reference
+
       console.log("* MarathonDataAll", MarathonDataAll);
       makeDisplayTable(); // MarathonDataAll);
     })
@@ -29,38 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // ----------------------------------------------------------
-
-function isValidDate(dateString) {
-  // Check if Date.parse() returns a valid date (not NaN) and the parsed date is not equal to "Invalid Date"
-  return (
-    !isNaN(Date.parse(dateString)) && new Date(dateString) !== "Invalid Date"
-  );
-}
-
-// ----------------------------------------------------------
-
-function parseDate(dateString) {
-  var parts = dateString.split("/");
-  // Note: months are 0-based in JavaScript Date, so we need to subtract 1
-  return new Date(parts[2], parts[0] - 1, parts[1]);
-}
-
-// ----------------------------------------------------------
-
-function parseTime(timeString) {
-  timeString = timeString.replace("~", "");
-  timeString = timeString.replace("?", "0");
-  timeString = timeString.replace("x", "0");
-  timeString = timeString.replace("~unknown~", "");
-  timeString = timeString.replace("unknown~", "");
-  let parts = timeString.split(":");
-  if (!parts.length == 2) parts.push("00");
-
-  // if (!parts[2]) console.log("* timeString:", timeString);
-  return new Date(1970, 0, 1, parts[0], parts[1], parts[2]);
-}
-
-// -----------------------------------------------------
 
 // To implement 3-state check boxes the best way seems to be
 // // to include a hidden inputbox, not implemented here (yet)
@@ -225,90 +196,59 @@ function makeDisplayTable() {
 
 // -----------------------------------------------------
 
-// function SetCheckboxState(checkbox) {
-//   console.log("********** state", checkbox.checked, checkbox.indeterminate);
+function resetClicked() {
+  console.log("******* reset");
 
-//   if (checkbox.indeterminate) {
-//     checkbox.checked = true;
-//     checkbox.indeterminate = false;
-//   } else if (checkbox.checked) {
-//     checkbox.checked = false;
-//     checkbox.indeterminate = true;
-//   } else {
-//     checkbox.checked = true;
-//   }
-//   console.log("*-*-* ", checkbox.checked, checkbox.indeterminate);
-// }
+  let elyIsMarathon = document.getElementById("IsMarathon");
+  let elyOfficialEntrant = document.getElementById("OfficialEntrant");
+  elyIsMarathon.checked = false;
+  elyOfficialEntrant.checked = false;
+  colAscending = [false, false, false, false, false, false, false];
+  MarathonDataAll = JSON.parse(JSON.stringify(MarathonDataOriginal)); // Break the reference;
 
-// -----------------------------------------------------
-// function changeState(checkbox) {
-//   if (checkbox.indeterminate) {
-//     checkbox.checked = true;
-//     checkbox.indeterminate = false;
-//   } else if (checkbox.checked) {
-//     checkbox.checked = false;
-//     checkbox.indeterminate = true;
-//   } else {
-//     checkbox.checked = true;
-//     checkbox.indeterminate = false; // Ensure indeterminate state is cleared if checkbox is checked
-//   }
-//   console.log(getCheckboxState(checkbox));
-// }
+  console.log("* All ", MarathonDataAll[0], MarathonDataAll[0].OverallOrder);
+  console.log(
+    "* Original ",
+    MarathonDataOriginal[0],
+    MarathonDataOriginal[0].OverallOrder
+  );
 
-// function getCheckboxState(checkbox) {
-//   if (checkbox.checked) {
-//     return "checked";
-//   } else if (checkbox.indeterminate) {
-//     return "indeterminate";
-//   } else {
-//     return "unchecked";
-//   }
-// }
-
-// -----------------------------------------------------
-// const checkbox = document.getElementById("myCheckbox");
-// const stateInput = document.getElementById("checkboxState");
-
-/*
-function checkboxClick() {
-  // Add your desired functionality here (e.g., console logs)
-  console.log("Checkbox clicked!");
-
-  // Update indeterminate state based on checkbox value
-  if (checkbox.checked) {
-    checkbox.indeterminate = false;
-  } else {
-    // ... sub-checkbox check logic ... (replace with your logic)
-    const subCheckboxes = document.querySelectorAll(".subCheckbox");
-    let someChecked = false;
-    for (const subCheckbox of subCheckboxes) {
-      if (subCheckbox.checked) {
-        someChecked = true;
-        break;
-      }
-    }
-    checkbox.indeterminate = someChecked;
-  }
-
-  // Update hidden field value with checkbox state
-  console.log("setting hidden box value ", checkbox.indeterminate);
-  stateInput.value = checkbox.indeterminate;
+  makeDisplayTable();
 }
 
-// Attach click event listener
- checkbox.addEventListener("click", checkboxClick);
+// *********************************************************
+// *** HELPERS
+function isValidDate(dateString) {
+  // Check if Date.parse() returns a valid date (not NaN) and the parsed date is not equal to "Invalid Date"
+  return (
+    !isNaN(Date.parse(dateString)) && new Date(dateString) !== "Invalid Date"
+  );
+}
 
-*/
-// Set initial hidden field value (optional)
-// You can set this based on your application logic (true, false, or "")
-// const storedState = localStorage.getItem("checkboxState"); // Check local storage for previous state (optional)
-// if (storedState !== null) {
-//   checkbox.indeterminate = storedState === "true";
-// } else {
-//   stateInput.value = ""; // Set empty string for initial state (optional)
-// }
+// ----------------------------------------------------------
+
+function parseDate(dateString) {
+  var parts = dateString.split("/");
+  // Note: months are 0-based in JavaScript Date, so we need to subtract 1
+  return new Date(parts[2], parts[0] - 1, parts[1]);
+}
+
+// ----------------------------------------------------------
+
+function parseTime(timeString) {
+  timeString = timeString.replace("~", "");
+  timeString = timeString.replace("?", "0");
+  timeString = timeString.replace("x", "0");
+  timeString = timeString.replace("~unknown~", "");
+  timeString = timeString.replace("unknown~", "");
+  let parts = timeString.split(":");
+  if (!parts.length == 2) parts.push("00");
+
+  // if (!parts[2]) console.log("* timeString:", timeString);
+  return new Date(1970, 0, 1, parts[0], parts[1], parts[2]);
+}
+// *********************************************************
 
 // -----------------------------------------------------
 
-// -----------------------------------------------------
 // -----------------------------------------------------

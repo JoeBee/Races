@@ -158,6 +158,57 @@ td:nth-child(10) {
     width: 17%;
 }
 
+/* ---------------------------------------------- */
 
+/* Top DIV styling */
+/* .topDivContainer  */
+.topDivContainer {
+    width: 100%;
+    max-height: 50px;
+    /* Set maximum height */
+    overflow: hidden;
+    /* Hide overflow content */
+    border: 1px solid #ccc;
+    /* Just for demonstration */
+    display: flex;
+    /* Use flexbox layout */
+    justify-content: flex-end;
+    /* Align children to the right */
+    align-items: center;
+    /* Center align vertically */
+    position: relative;
+    /* Needed for absolutely positioned children */
+}
+
+.topDivContainer img {
+    max-height: 100%;
+    /* Ensure image fits within container */
+    max-width: 100%;
+    /* Ensure image fits within container */
+    display: block;
+    /* Remove default spacing */
+    cursor: pointer;
+    /* Change cursor to pointer */
+}
+
+.dynamic-text {
+    position: absolute;
+    /* Position the text absolutely */
+    bottom: 0;
+    /* Place it at the bottom */
+    right: 0;
+    /* Align it to the right */
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Semi-transparent background */
+    padding: 5px;
+    /* Add padding for better visibility */
+    box-sizing: border-box;
+    /* Include padding in width calculation */
+}
+
+.topDivContainer:hover img {
+    cursor: pointer;
+    /* Change cursor to pointer on hover */
+}
 
 /* ---------------------------------------------- */
