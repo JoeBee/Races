@@ -68,20 +68,6 @@ function parseTime(timeString) {
 // const stateInput = document.getElementById("checkboxState");
 
 function checkBoxClicked(colKey) {
-  // let element = document.getElementById(colKey);
-  // console.log(colKey, element.checked); // , element.indeterminate);
-  // //SetCheckboxState(element);
-
-  // let colIndex = colsAry.indexOf(colKey);
-  // console.log(" colIndex", colIndex);
-
-  // const filteredData = MarathonDataAll.filter((item) => {
-  //   const columnValue = item[Object.keys(item)[colIndex]];
-  //   return columnValue === "TRUE"; // Filtering where IsMarathon is true
-  // });
-
-  // console.log("* ", element.checked, colKey, filteredData.length);
-
   makeDisplayTable();
 }
 
@@ -93,20 +79,22 @@ function filterDatacheck() {
 
   let rtnData = MarathonDataAll;
 
-  if (!elyIsMarathon.checked) {
+  // Marathon+ Only
+  if (elyIsMarathon.checked) {
     let colIndexMar = colsAry.indexOf("IsMarathon");
     rtnData = rtnData.filter((item) => {
       const columnValue = item[Object.keys(item)[colIndexMar]];
-      return columnValue !== "TRUE";
+      return columnValue === "TRUE";
     });
     console.log(" - Mar post count", rtnData.length);
   }
 
-  if (!elyOfficialEntrant.checked) {
+  // Official Entrant Only
+  if (elyOfficialEntrant.checked) {
     let colIndexOff = colsAry.indexOf("OfficialEntrant");
     rtnData = rtnData.filter((item) => {
       const columnValue = item[Object.keys(item)[colIndexOff]];
-      return columnValue !== "TRUE";
+      return columnValue == "TRUE";
     });
     console.log(" - Off post count", rtnData.length);
   }
