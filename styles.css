@@ -1,5 +1,11 @@
 body {
     font-family: Verdana, Arial, sans-serif;
+
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+    /* Optional: prevents horizontal scrollbars */
 }
 
 /* ---------------------------------------------- */
@@ -18,7 +24,6 @@ table {
 
 
 th {
-    cursor: pointer;
     background-color: #f2f2f2;
     padding: 10px;
     text-align: left;
@@ -29,6 +34,10 @@ th {
 /* Change background color on hover */
 th:hover {
     background-color: #e0e0e0;
+}
+
+.th_hover_link {
+    cursor: pointer;
 }
 
 /* Optional: Style for even table rows */
@@ -43,7 +52,8 @@ tr:nth-child(odd) {
 
 /* ---------------------------------------------- */
 
-/* Styles for checkboxes with indeterminate state */
+/* Styles for checkboxes with indeterminate state  */
+/* Intermediate checkboxes not implamented (yet)   */
 .tri-state-checkbox:indeterminate+label::before {
     content: "-";
     color: black;
@@ -161,54 +171,22 @@ td:nth-child(10) {
 /* ---------------------------------------------- */
 
 /* Top DIV styling */
-/* .topDivContainer  */
 .topDivContainer {
-    width: 100%;
-    max-height: 50px;
-    /* Set maximum height */
-    overflow: hidden;
-    /* Hide overflow content */
-    border: 1px solid #ccc;
-    /* Just for demonstration */
+    width: 98%;
     display: flex;
-    /* Use flexbox layout */
     justify-content: flex-end;
-    /* Align children to the right */
     align-items: center;
-    /* Center align vertically */
     position: relative;
-    /* Needed for absolutely positioned children */
-}
-
-.topDivContainer img {
-    max-height: 100%;
-    /* Ensure image fits within container */
-    max-width: 100%;
-    /* Ensure image fits within container */
-    display: block;
-    /* Remove default spacing */
-    cursor: pointer;
-    /* Change cursor to pointer */
+    padding-right: 10px;
 }
 
 .dynamic-text {
-    position: absolute;
-    /* Position the text absolutely */
-    bottom: 0;
-    /* Place it at the bottom */
-    right: 0;
-    /* Align it to the right */
-    background-color: rgba(255, 255, 255, 0.8);
-    /* Semi-transparent background */
-    padding: 5px;
-    /* Add padding for better visibility */
-    box-sizing: border-box;
-    /* Include padding in width calculation */
+    margin-right: 10px;
+    padding-right: 15px;
 }
 
 .topDivContainer:hover img {
     cursor: pointer;
-    /* Change cursor to pointer on hover */
 }
 
 /* ---------------------------------------------- */

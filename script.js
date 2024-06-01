@@ -70,6 +70,7 @@ function filterDatacheck() {
     console.log(" - Off post count", rtnData.length);
   }
 
+  writeHeaderInfo(rtnData.length, MarathonDataAll.length);
   return rtnData;
 }
 
@@ -247,8 +248,19 @@ function parseTime(timeString) {
   // if (!parts[2]) console.log("* timeString:", timeString);
   return new Date(1970, 0, 1, parts[0], parts[1], parts[2]);
 }
-// *********************************************************
-
 // -----------------------------------------------------
+
+function writeHeaderInfo(iDisplaying, iTotalRecs) {
+  let myDiv = document.getElementById("dynamcicText");
+  let displayText = "";
+  if (iDisplaying === iTotalRecs) {
+    displayText = `Displaying all ${iTotalRecs} records`;
+  } else {
+    displayText = `Displaying ${iDisplaying} of ${iTotalRecs} records`;
+  }
+  myDiv.textContent = displayText;
+}
+
+// *********************************************************
 
 // -----------------------------------------------------

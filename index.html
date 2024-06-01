@@ -16,11 +16,13 @@
 
 <body>
     <div class="topDivContainer">
-        <img src="./assets/reset50px.png"
-             alt="Clear sort and filters"
-             onclick="resetClicked()">
-
-        <!-- <div class="dynamic-text">Dynamic Text Placeholder</div> -->
+        <div id="dynamcicText"
+             class="dynamic-text">***</div>
+        <div>
+            <img src="./assets/reset50px.png"
+                 alt="Clear sort and filters"
+                 onclick="resetClicked()">
+        </div>
     </div>
 
 
@@ -28,11 +30,16 @@
         <thead>
             <tr>
 
-                <th onclick="sortTable('OverallOrder')">Overall Order</th>
-                <th onclick="sortTable('MarathonNumber')">Marathon Number</th>
-                <th onclick="sortTable('RaceName')">Race Name</th>
-                <th onclick="sortTable('Date')">Date</th>
-                <th onclick="sortTable('FinishTime')">Finish Time</th>
+                <th class="th_hover_link"
+                    onclick="sortTable('OverallOrder')">Overall Order</th>
+                <th class="th_hover_link"
+                    onclick="sortTable('MarathonNumber')">Marathon Number</th>
+                <th class="th_hover_link"
+                    onclick="sortTable('RaceName')">Race Name</th>
+                <th class="th_hover_link"
+                    onclick="sortTable('Date')">Date</th>
+                <th class="th_hover_link"
+                    onclick="sortTable('FinishTime')">Finish Time</th>
                 <th>Marathon+ Only<input type="checkbox"
                            class="tri-state-checkbox"
                            id="IsMarathon"
