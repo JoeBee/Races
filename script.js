@@ -2,6 +2,8 @@ let MarathonDataAll = []; // Read once upon page load
 let MarathonDataOriginal = []; // Used in resets to clear sort order
 let colAscending = [false, false, false, false, false, false, false];
 
+let isTestServer = false;
+
 const colsAry = [
   "OverallOrder",
   "MarathonNumber",
@@ -19,6 +21,11 @@ const colsAry = [
 
 // *** Page Load
 document.addEventListener("DOMContentLoaded", function () {
+  let hostname = window.location.hostname;
+  isTestServer = hostname === "localhost";
+
+  console.log("*** isTestServer, hostname", isTestServer, hostname);
+
   fetch("races.json")
     .then((response) => response.json())
     .then((data) => {
@@ -167,7 +174,10 @@ function makeDisplayTable() {
           // outputHtml += `<img src="/marathonPix/${x}" alt="${x}"> `;
           charCounter = charCounter + x.length;
 
-          outputHtml += `<a href="/Races/marathonPix/${x}" target="_blank">${x}</a>`;
+          if (isTestServer)
+            outputHtml += `<a href="/marathonPix/${x}" target="_blank">${x}</a>`;
+          else
+            outputHtml += `<a href="/Races/marathonPix/${x}" target="_blank">${x}</a>`;
 
           // Limit how many images before newline
           if (charCounter > 85) {
