@@ -32,7 +32,11 @@ th {
 }
 
 /* Change background color on hover */
-th:hover {
+/* th:hover {
+    background-color: #e0e0e0;
+} */
+
+.th_hover_link:hover {
     background-color: #e0e0e0;
 }
 
