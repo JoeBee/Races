@@ -39,6 +39,16 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // ----------------------------------------------------------
+// Right side scroll arrows
+document.getElementById("scroll-up").addEventListener("click", function () {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+document.getElementById("scroll-down").addEventListener("click", function () {
+  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+});
+
+// ----------------------------------------------------------
 
 // To implement 3-state check boxes the best way seems to be
 // // to include a hidden inputbox, not implemented here (yet)
