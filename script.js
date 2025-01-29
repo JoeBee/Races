@@ -21,6 +21,7 @@ const colsAry = [
 
 // *** Page Load
 document.addEventListener("DOMContentLoaded", function () {
+  console.log('* LOADED');
   let hostname = window.location.hostname;
   isTestServer = hostname === "localhost";
 
@@ -198,13 +199,11 @@ function makeDisplayTable() {
         cell.innerHTML = outputHtml; // rowData[key].join(", ");
         // console.log("* Images", key, imgs);
       } else if (key === "IsMarathon") {
-        cell.innerHTML = `<input type='checkbox' disabled='disabled' ${
-          keyValue === "TRUE" ? "checked" : ""
-        }>`;
+        cell.innerHTML = `<input type='checkbox' disabled='disabled' ${keyValue === "TRUE" ? "checked" : ""
+          }>`;
       } else if (key === "OfficialEntrant") {
-        cell.innerHTML = `<input type='checkbox' disabled='disabled' ${
-          keyValue === "TRUE" ? "checked" : ""
-        }>`;
+        cell.innerHTML = `<input type='checkbox' disabled='disabled' ${keyValue === "TRUE" ? "checked" : ""
+          }>`;
       } else {
         cell.textContent = rowData[key];
       }
