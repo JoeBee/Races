@@ -1,10 +1,11 @@
 body {
     font-family: Verdana, Arial, sans-serif;
-
     margin: 0;
     padding: 0;
     max-width: 100%;
     overflow-x: hidden;
+    width: 100%;
+    box-sizing: border-box;
     /* Optional: prevents horizontal scrollbars */
 }
 
@@ -15,13 +16,25 @@ body {
 table {
     font-family: Verdana, Arial, sans-serif;
     font-size: 10px;
-
     border-collapse: collapse;
     width: 100%;
     table-layout: fixed;
-    /* Fixed table layout */
+    border-spacing: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: none;
+    /* Ensure no max-width is applied */
 }
 
+/* Remove any potential container margins/padding */
+.table-container,
+div:has(> table) {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 th {
     background-color: #f2f2f2;
@@ -77,120 +90,126 @@ tr:nth-child(odd) {
 
 /* ---------------------------------------------- */
 
-/* .colWidth1 {
-    width: 5%;
-}
 
-.colWidth2 {
-    width: 5%;
-}
-
-.colWidth3 {
-    width: 10%;
-}
-
-.colWidth4 {
-    width: 15%;
-}
-
-.colWidth5 {
-    width: 8%;
-}
-
-.colWidth6 {
-    width: 8%;
-}
-
-.colWidth7 {
-    width: 8%;
-}
-
-.colWidth8 {
-    width: 12%;
-}
-
-.colWidth9 {
-    width: 12%;
-}
-
-.colWidth10 {
-    width: 17%;
-} */
-
-
-
-/* TESTING FOLLOWS */
-
-/* Set fixed widths for each column */
+/* Order */
 th:nth-child(1),
 td:nth-child(1) {
     width: 5%;
+    text-align: center;
 }
 
+/* Mar. # */
 th:nth-child(2),
 td:nth-child(2) {
     width: 5%;
+    text-align: center;
 }
 
+/* Race Name */
 th:nth-child(3),
 td:nth-child(3) {
-    width: 10%;
+    width: 14%;
 }
 
+/* Date */
 th:nth-child(4),
 td:nth-child(4) {
-    width: 15%;
+    width: 6%;
+    text-align: center;
 }
 
+/* Finish Time */
 th:nth-child(5),
 td:nth-child(5) {
-    width: 8%;
+    width: 6%;
+    text-align: center;
 }
 
+/* Marathon and Ultras Only */
 th:nth-child(6),
 td:nth-child(6) {
-    width: 8%;
+    width: 7%;
+    text-align: center;
 }
 
+/* Official Entrant Only */
 th:nth-child(7),
 td:nth-child(7) {
-    width: 8%;
+    width: 7%;
+    text-align: center;
 }
 
+/* String */
 th:nth-child(8),
 td:nth-child(8) {
-    width: 12%;
+    width: 19%;
 }
 
+/* Playlist */
 th:nth-child(9),
 td:nth-child(9) {
-    width: 12%;
+    width: 6%;
+    text-align: center;
 }
 
+/* Images - last column to fill remaining space */
 th:nth-child(10),
 td:nth-child(10) {
-    width: 17%;
+    width: 25%;
 }
 
 /* ---------------------------------------------- */
 
 /* Top DIV styling */
 .topDivContainer {
-    width: 98%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    position: relative;
-    padding-right: 10px;
+    background-color: #f5f5f5;
+    padding: 10px 20px;
+    border-bottom: none;
+    margin-bottom: 0;
+    border-radius: 5px 5px 0 0;
 }
 
+/* Page title styling */
+.page-title {
+    color: #333;
+    margin: 0;
+    font-size: 28px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Container for dynamic text and reset button */
+.dynamic-text-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Style for the dynamic text */
 .dynamic-text {
-    margin-right: 10px;
-    padding-right: 15px;
+    font-weight: bold;
+    color: #555;
+    font-size: 18px;
 }
 
-.topDivContainer:hover img {
+/* Style for the reset button image */
+.dynamic-text-container img {
     cursor: pointer;
+    transition: transform 0.2s;
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect for the reset button */
+.dynamic-text-container img:hover {
+    transform: rotate(20deg);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* ---------------------------------------------- */
@@ -237,3 +256,125 @@ td:first-child {
 
 /* ---------------------------------------------- */
 
+/* Add this CSS to center the text in table headers vertically */
+thead th {
+    vertical-align: middle;
+    text-align: center;
+    height: 40px;
+    padding: 8px;
+    line-height: 1.2;
+    display: table-cell;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #f5f5f5;
+    box-shadow: none;
+    border-top: none;
+}
+
+/* Add specific styling for the Marathon+ Only and Official Entrant Only columns */
+th:nth-child(6),
+/* IsMarathon column */
+th:nth-child(7)
+
+/* OfficialEntrant column */
+    {
+    vertical-align: middle;
+    text-align: center;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+/* Make sure the checkmark cells are also vertically centered */
+td:nth-child(6),
+td:nth-child(7) {
+    vertical-align: middle;
+    font-size: 14px;
+    /* Makes the checkmark slightly larger */
+}
+
+/* Make the table header sticky so it's always visible when scrolling */
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    /* Ensures the header stays above the table content */
+}
+
+/* Ensure the header has a solid background so content doesn't show through */
+thead th {
+    vertical-align: middle;
+    text-align: center;
+    height: 40px;
+    padding: 8px;
+    line-height: 1.2;
+    display: table-cell;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #f2f2f2;
+    /* Match your existing header background */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    /* Optional: adds a subtle shadow */
+}
+
+/* Keep the dynamic text aligned to the right */
+.dynamic-text-container {
+    display: flex;
+    align-items: center;
+}
+
+/* Adjust the column widths to exactly 100% total */
+th:nth-child(1),
+td:nth-child(1) {
+    width: 5%;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+    width: 5%;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+    width: 14%;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+    width: 6%;
+}
+
+th:nth-child(5),
+td:nth-child(5) {
+    width: 6%;
+}
+
+th:nth-child(6),
+td:nth-child(6) {
+    width: 7%;
+}
+
+/* Reduced from 8% */
+th:nth-child(7),
+td:nth-child(7) {
+    width: 7%;
+}
+
+/* Reduced from 8% */
+th:nth-child(8),
+td:nth-child(8) {
+    width: 19%;
+}
+
+/* Reduced from 20% */
+th:nth-child(9),
+td:nth-child(9) {
+    width: 6%;
+}
+
+/* Reduced from 7% */
+th:nth-child(10),
+td:nth-child(10) {
+    width: 25%;
+}
+
+/* Reduced from 27% */

@@ -2,12 +2,7 @@
 
 <head>
     <link rel="icon" href="./favicon.ico" />
-    <!-- <link rel="shortcut icon"
-          type="image/x-icon"
-          href="favicon.ico"> -->
     <meta charset="UTF-8">
-    <!-- <meta name="viewport"
-          content="width=device-width, initial-scale=1.0"> -->
     <title>Joe's Races</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -15,39 +10,34 @@
 <body>
 
     <div class="topDivContainer">
-        <!--  target="_blank" -->
-        <!-- <div><a href="imgViewer/imgViewer.html?number=42">TEST</a>&nbsp;&nbsp;&nbsp;</div> -->
-        <div id="dynamcicText" class="dynamic-text">***</div>
-        <div>
-            <img src="./assets/reset50px.png" alt="Clear sort and filters" onclick="resetClicked()"
-                title="Reset filters and sorts">
+        <h1 class="page-title">Joe's Races</h1>
+        <div class="dynamic-text-container">
+            <div id="dynamcicText" class="dynamic-text">***</div>
+            <div>
+                <img src="./assets/refresh-icon.png" alt="Clear sort and filters" onclick="resetClicked()"
+                    title="Reset filters and sorts">
+            </div>
         </div>
     </div>
 
 
-    <table id="dataTable">
+    <table id="dataTable" style="background-color: lightcoral">
         <thead>
             <tr>
 
-                <th class="th_hover_link" onclick="sortTable('OverallOrder')">Overall Order</th>
-                <th class="th_hover_link" onclick="sortTable('MarathonNumber')">Marathon Number</th>
+                <th class="th_hover_link" onclick="sortTable('OverallOrder')"></th>
+                <th class="th_hover_link" onclick="sortTable('MarathonNumber')">Mar. #</th>
                 <th class="th_hover_link" onclick="sortTable('RaceName')">Race Name</th>
                 <th class="th_hover_link" onclick="sortTable('Date')">Date</th>
                 <th class="th_hover_link" onclick="sortTable('FinishTime')">Finish Time</th>
-                <th>Marathon+ Only<input type="checkbox" class="tri-state-checkbox" id="IsMarathon"
+                <th>Mars. and Ultras Only<input type="checkbox" class="tri-state-checkbox" id="IsMarathon"
                         onclick="checkBoxClicked('IsMarathon')"></th>
                 <th>Official Entrant Only<input type="checkbox" class="tri-state-checkbox" id="OfficialEntrant"
                         onclick="checkBoxClicked('OfficialEntrant')"></th>
-                <!-- check-box state   -->
-                <!-- <th>Official Entrant?<input type="checkbox"
-                        class="tri-state-checkbox"
-                        id="OfficialEntrant"
-                        onclick="checkBoxClicked('OfficialEntrant')"></th> -->
-                <!-- <input id="checkboxState"
-                           value=""> -->
-                <th>Link</th>
+
+                <th>String</th>
+                <th>Playlist</th>
                 <th>Images</th>
-                <th>Backup Images</th>
             </tr>
         </thead>
         <tbody id="tableBody">

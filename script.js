@@ -199,11 +199,11 @@ function makeDisplayTable() {
         cell.innerHTML = outputHtml; // rowData[key].join(", ");
         // console.log("* Images", key, imgs);
       } else if (key === "IsMarathon") {
-        cell.innerHTML = `<input type='checkbox' disabled='disabled' ${keyValue === "TRUE" ? "checked" : ""
-          }>`;
+        cell.innerHTML = keyValue === "TRUE" ? "✓" : "";
+        cell.style.textAlign = "center";
       } else if (key === "OfficialEntrant") {
-        cell.innerHTML = `<input type='checkbox' disabled='disabled' ${keyValue === "TRUE" ? "checked" : ""
-          }>`;
+        cell.innerHTML = keyValue === "TRUE" ? "✓" : "";
+        cell.style.textAlign = "center";
       } else {
         cell.textContent = rowData[key];
       }
@@ -281,5 +281,18 @@ function writeHeaderInfo(iDisplaying, iTotalRecs) {
 }
 
 // *********************************************************
+
+// -----------------------------------------------------
+
+// If you're creating header cells programmatically, add the style attribute
+function createTableHeader() {
+  // ... existing code ...
+
+  const headerCell = document.createElement("th");
+  headerCell.style.verticalAlign = "middle";
+  headerCell.style.height = "40px";
+
+  // ... rest of your code
+}
 
 // -----------------------------------------------------
