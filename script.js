@@ -21,19 +21,14 @@ const colsAry = [
 
 // *** Page Load
 document.addEventListener("DOMContentLoaded", function () {
-  console.log('* LOADED');
   let hostname = window.location.hostname;
   isTestServer = hostname === "localhost";
-
-  console.log("*** isTestServer, hostname", isTestServer, hostname);
 
   fetch("races.json")
     .then((response) => response.json())
     .then((data) => {
       MarathonDataAll = data;
       MarathonDataOriginal = JSON.parse(JSON.stringify(data)); // Break the reference
-
-      console.log("* MarathonDataAll", MarathonDataAll);
       makeDisplayTable(); // MarathonDataAll);
     })
     .catch((error) => console.error("Error fetching data:", error));
@@ -75,7 +70,6 @@ function filterDatacheck() {
       const columnValue = item[Object.keys(item)[colIndexMar]];
       return columnValue === "TRUE";
     });
-    console.log(" - Mar post count", rtnData.length);
   }
 
   // Official Entrant Only
@@ -85,7 +79,6 @@ function filterDatacheck() {
       const columnValue = item[Object.keys(item)[colIndexOff]];
       return columnValue == "TRUE";
     });
-    console.log(" - Off post count", rtnData.length);
   }
 
   writeHeaderInfo(rtnData.length, MarathonDataAll.length);
@@ -147,8 +140,6 @@ function sortTable(colKey) {
 function makeDisplayTable() {
   let displayData = filterDatacheck();
 
-  console.log("Count:", displayData.length);
-
   const tableBody = document.getElementById("tableBody");
   tableBody.innerHTML = "";
 
@@ -197,13 +188,14 @@ function makeDisplayTable() {
           }
         });
         cell.innerHTML = outputHtml; // rowData[key].join(", ");
-        // console.log("* Images", key, imgs);
       } else if (key === "IsMarathon") {
         cell.innerHTML = keyValue === "TRUE" ? "✓" : "";
         cell.style.textAlign = "center";
       } else if (key === "OfficialEntrant") {
         cell.innerHTML = keyValue === "TRUE" ? "✓" : "";
         cell.style.textAlign = "center";
+      } else if (key === "String") {
+        cell.innerHTML = rowData[key];
       } else {
         cell.textContent = rowData[key];
       }
@@ -214,24 +206,17 @@ function makeDisplayTable() {
   });
 }
 
+
+
 // -----------------------------------------------------
 
 function resetClicked() {
-  console.log("******* reset");
-
   let elyIsMarathon = document.getElementById("IsMarathon");
   let elyOfficialEntrant = document.getElementById("OfficialEntrant");
   elyIsMarathon.checked = false;
   elyOfficialEntrant.checked = false;
   colAscending = [false, false, false, false, false, false, false];
   MarathonDataAll = JSON.parse(JSON.stringify(MarathonDataOriginal)); // Break the reference;
-
-  console.log("* All ", MarathonDataAll[0], MarathonDataAll[0].OverallOrder);
-  console.log(
-    "* Original ",
-    MarathonDataOriginal[0],
-    MarathonDataOriginal[0].OverallOrder
-  );
 
   makeDisplayTable();
 }
@@ -264,7 +249,6 @@ function parseTime(timeString) {
   let parts = timeString.split(":");
   if (!parts.length == 2) parts.push("00");
 
-  // if (!parts[2]) console.log("* timeString:", timeString);
   return new Date(1970, 0, 1, parts[0], parts[1], parts[2]);
 }
 // -----------------------------------------------------
@@ -279,8 +263,6 @@ function writeHeaderInfo(iDisplaying, iTotalRecs) {
   }
   myDiv.textContent = displayText;
 }
-
-// *********************************************************
 
 // -----------------------------------------------------
 
