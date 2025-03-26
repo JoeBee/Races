@@ -12,9 +12,9 @@
     <div class="topDivContainer">
         <h1 class="page-title">Joe's Races</h1>
         <div class="dynamic-text-container">
-            <div id="dynamcicText" class="dynamic-text">***</div>
+            <div id="dynamicText" class="dynamic-text">***</div>
             <div>
-                <img src="./assets/refresh-icon.png" alt="Clear sort and filters" onclick="resetClicked()"
+                <img src="./assets/refresh-icon.png" alt="Clear sort and filters" onclick="handleResetClick()"
                     title="Reset filters and sorts">
             </div>
         </div>
@@ -31,9 +31,9 @@
                 <th class="th_hover_link" onclick="sortTable('Date')">Date</th>
                 <th class="th_hover_link" onclick="sortTable('FinishTime')">Finish Time</th>
                 <th>Mars. and Ultras Only&nbsp;<input type="checkbox" class="tri-state-checkbox" id="IsMarathon"
-                        onclick="checkBoxClicked('IsMarathon')"></th>
+                        onclick="handleCheckboxClick('IsMarathon')"></th>
                 <th>Official Entrant Only&nbsp;<input type="checkbox" class="tri-state-checkbox" id="OfficialEntrant"
-                        onclick="checkBoxClicked('OfficialEntrant')"></th>
+                        onclick="handleCheckboxClick('OfficialEntrant')"></th>
 
                 <th>String</th>
                 <th>Playlist</th>

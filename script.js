@@ -1,10 +1,10 @@
-let MarathonDataAll = []; // Read once upon page load
-let MarathonDataOriginal = []; // Used in resets to clear sort order
-let colAscending = [false, false, false, false, false, false, false];
+let raceData = []; // Read once upon page load
+let originalRaceData = []; // Used in resets to clear sort order
+let columnSortDirections = [false, false, false, false, false, false, false];
 
-let isTestServer = false;
+let isDevelopmentServer = false;
 
-const colsAry = [
+const COLUMN_NAMES = [
   "OverallOrder",
   "MarathonNumber",
   "RaceName",
@@ -22,14 +22,14 @@ const colsAry = [
 // *** Page Load
 document.addEventListener("DOMContentLoaded", function () {
   let hostname = window.location.hostname;
-  isTestServer = hostname === "localhost";
+  isDevelopmentServer = hostname === "localhost";
 
   fetch("races.json")
     .then((response) => response.json())
     .then((data) => {
-      MarathonDataAll = data;
-      MarathonDataOriginal = JSON.parse(JSON.stringify(data)); // Break the reference
-      makeDisplayTable(); // MarathonDataAll);
+      raceData = data;
+      originalRaceData = JSON.parse(JSON.stringify(data)); // Break the reference
+      makeDisplayTable(); // raceData);
     })
     .catch((error) => console.error("Error fetching data:", error));
 });
@@ -51,7 +51,7 @@ document.getElementById("scroll-down").addEventListener("click", function () {
 // const checkbox = document.getElementById("myCheckbox");
 // const stateInput = document.getElementById("checkboxState");
 
-function checkBoxClicked(colKey) {
+function handleCheckboxClick(columnKey) {
   makeDisplayTable();
 }
 
@@ -61,11 +61,11 @@ function filterDatacheck() {
   let elyIsMarathon = document.getElementById("IsMarathon");
   let elyOfficialEntrant = document.getElementById("OfficialEntrant");
 
-  let rtnData = MarathonDataAll;
+  let rtnData = raceData;
 
   // Marathon+ Only
   if (elyIsMarathon.checked) {
-    let colIndexMar = colsAry.indexOf("IsMarathon");
+    let colIndexMar = COLUMN_NAMES.indexOf("IsMarathon");
     rtnData = rtnData.filter((item) => {
       const columnValue = item[Object.keys(item)[colIndexMar]];
       return columnValue === "TRUE";
@@ -74,31 +74,31 @@ function filterDatacheck() {
 
   // Official Entrant Only
   if (elyOfficialEntrant.checked) {
-    let colIndexOff = colsAry.indexOf("OfficialEntrant");
+    let colIndexOff = COLUMN_NAMES.indexOf("OfficialEntrant");
     rtnData = rtnData.filter((item) => {
       const columnValue = item[Object.keys(item)[colIndexOff]];
       return columnValue == "TRUE";
     });
   }
 
-  writeHeaderInfo(rtnData.length, MarathonDataAll.length);
+  writeHeaderInfo(rtnData.length, raceData.length);
   return rtnData;
 }
 
 // -----------------------------------------------------
 
 function sortTable(colKey) {
-  let colIndex = colsAry.indexOf(colKey);
-  let sortAscending = colAscending[colIndex] === true ? false : true;
-  colAscending[colIndex] = sortAscending;
+  let colIndex = COLUMN_NAMES.indexOf(colKey);
+  let isSortAscending = !columnSortDirections[colIndex];
+  columnSortDirections[colIndex] = isSortAscending;
 
-  MarathonDataAll.sort((a, b) => {
+  raceData.sort((a, b) => {
     let aValue = a[colKey];
     let bValue = b[colKey];
 
     if (colKey == "OverallOrder" || colKey == "MarathonNumber") {
       // Because all records don't have Marathon Number we want these records sorting to the bottom
-      if (sortAscending) {
+      if (isSortAscending) {
         if (aValue == "") aValue = -9999;
         if (bValue == "") bValue = -9999;
       } else {
@@ -109,30 +109,49 @@ function sortTable(colKey) {
       let intA = parseInt(aValue);
       let intB = parseInt(bValue);
 
-      if (sortAscending) return parseInt(intB) - parseInt(intA);
+      if (isSortAscending) return parseInt(intB) - parseInt(intA);
       else return parseInt(intA) - parseInt(intB);
     }
-    if (colKey == "Date") {
+    else if (colKey == "Date") {
       if (isValidDate(aValue) && isValidDate(bValue)) {
         let dateA = parseDate(aValue);
         let dateB = parseDate(bValue);
         return dateA - dateB;
       }
-      if (sortAscending) return aValue.localeCompare(bValue);
+      if (isSortAscending) return aValue.localeCompare(bValue);
       else return bValue.localeCompare(aValue);
     }
-    if (colKey == "FinishTime") {
-      var timeA = parseTime(aValue);
-      var timeB = parseTime(bValue);
-      if (sortAscending) return timeA - timeB;
+    else if (colKey == "FinishTime") {
+      let timeA = parseTime(aValue);
+      let timeB = parseTime(bValue);
+      if (isSortAscending) return timeA - timeB;
       else return timeB - timeA;
-    } else {
-      if (sortAscending) return aValue.localeCompare(bValue);
+    }
+    // else if (colKey == "Link" || colKey == "Images") {
+    //   let varA;
+    //   let varB;
+    //   if (!aValue || aValue.length == 0)
+    //     varA = undefined;
+    //   else
+    //     varA = aValue[0];
+
+    //   if (!bValue || bValue.length == 0)
+    //     varB = undefined;
+    //   else
+    //     varB = bValue[0];
+
+    //   let txtA = parseInt(varA);
+    //   let txtB = parseInt(varB);
+    //   if (isSortAscending) return txtA - txtB;
+    //   else return txtB - txtA;
+    // }
+    else {
+      if (isSortAscending) return aValue.localeCompare(bValue);
       else return bValue.localeCompare(aValue);
     }
   });
 
-  makeDisplayTable(); // MarathonDataAll);
+  makeDisplayTable(); // raceData);
 }
 
 // -----------------------------------------------------
@@ -171,20 +190,20 @@ function makeDisplayTable() {
       } else if (key === "Images" || key === "BackupImages") {
         let imgs = rowData[key];
         let outputHtml = "";
-        let charCounter = 0;
+        let characterCount = 0;
         imgs.forEach((x) => {
           // outputHtml += `<img src="/marathonPix/${x}" alt="${x}"> `;
-          charCounter = charCounter + x.length;
+          characterCount = characterCount + x.length;
 
-          if (isTestServer)
+          if (isDevelopmentServer)
             outputHtml += `<a href="/marathonPix/${x}" target="_blank">${x}</a>`;
           else
             outputHtml += `<a href="/Races/marathonPix/${x}" target="_blank">${x}</a>`;
 
           // Limit how many images before newline
-          if (charCounter > 85) {
+          if (characterCount > 85) {
             outputHtml += `<br>`;
-            charCounter = 0;
+            characterCount = 0;
           }
         });
         cell.innerHTML = outputHtml; // rowData[key].join(", ");
@@ -210,13 +229,13 @@ function makeDisplayTable() {
 
 // -----------------------------------------------------
 
-function resetClicked() {
+function handleResetClick() {
   let elyIsMarathon = document.getElementById("IsMarathon");
   let elyOfficialEntrant = document.getElementById("OfficialEntrant");
   elyIsMarathon.checked = false;
   elyOfficialEntrant.checked = false;
-  colAscending = [false, false, false, false, false, false, false];
-  MarathonDataAll = JSON.parse(JSON.stringify(MarathonDataOriginal)); // Break the reference;
+  columnSortDirections = [false, false, false, false, false, false, false];
+  raceData = JSON.parse(JSON.stringify(originalRaceData)); // Break the reference;
 
   makeDisplayTable();
 }
@@ -246,15 +265,15 @@ function parseTime(timeString) {
   timeString = timeString.replace("x", "0");
   timeString = timeString.replace("~unknown~", "");
   timeString = timeString.replace("unknown~", "");
-  let parts = timeString.split(":");
-  if (!parts.length == 2) parts.push("00");
+  let timeParts = timeString.split(":");
+  if (!timeParts.length == 2) timeParts.push("00");
 
-  return new Date(1970, 0, 1, parts[0], parts[1], parts[2]);
+  return new Date(1970, 0, 1, timeParts[0], timeParts[1], timeParts[2]);
 }
 // -----------------------------------------------------
 
 function writeHeaderInfo(iDisplaying, iTotalRecs) {
-  let myDiv = document.getElementById("dynamcicText");
+  let myDiv = document.getElementById("dynamicText");
   let displayText = "";
   if (iDisplaying === iTotalRecs) {
     displayText = `Displaying all ${iTotalRecs} records`;
