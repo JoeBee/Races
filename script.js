@@ -1,3 +1,5 @@
+'use strict';
+
 let raceData = []; // Read once upon page load
 let originalRaceData = []; // Used in resets to clear sort order
 let columnSortDirections = [false, false, false, false, false, false, false];
@@ -24,14 +26,29 @@ document.addEventListener("DOMContentLoaded", function () {
   let hostname = window.location.hostname;
   isDevelopmentServer = hostname === "localhost";
 
+  // Show loading indicator
+  const tableBody = document.getElementById("tableBody");
+  tableBody.innerHTML = "<tr><td colspan='10' style='text-align:center;'>Loading data...</td></tr>";
+
   fetch("races.json")
-    .then((response) => response.json())
-    .then((data) => {
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (!Array.isArray(data)) {
+        throw new Error('Invalid data format: expected an array');
+      }
       raceData = data;
       originalRaceData = JSON.parse(JSON.stringify(data)); // Break the reference
-      makeDisplayTable(); // raceData);
+      makeDisplayTable();
     })
-    .catch((error) => console.error("Error fetching data:", error));
+    .catch(error => {
+      console.error("Error fetching or processing data:", error);
+      tableBody.innerHTML = `<tr><td colspan='10' style='text-align:center;color:red;'>Error loading data: ${error.message}</td></tr>`;
+    });
 });
 
 // ----------------------------------------------------------
@@ -58,174 +75,172 @@ function handleCheckboxClick(columnKey) {
 // -----------------------------------------------------
 
 function filterDatacheck() {
-  let elyIsMarathon = document.getElementById("IsMarathon");
-  let elyOfficialEntrant = document.getElementById("OfficialEntrant");
+  const elyIsMarathon = document.getElementById("IsMarathon");
+  const elyOfficialEntrant = document.getElementById("OfficialEntrant");
 
-  let rtnData = raceData;
+  // Start with all data
+  let filteredData = [...raceData];
 
-  // Marathon+ Only
-  if (elyIsMarathon.checked) {
-    let colIndexMar = COLUMN_NAMES.indexOf("IsMarathon");
-    rtnData = rtnData.filter((item) => {
-      const columnValue = item[Object.keys(item)[colIndexMar]];
-      return columnValue === "TRUE";
+  // Filter for marathon events
+  if (elyIsMarathon && elyIsMarathon.checked) {
+    filteredData = filteredData.filter(item => {
+      const isMarathon = item["IsMarathon"];
+      return isMarathon === "TRUE";
     });
   }
 
-  // Official Entrant Only
-  if (elyOfficialEntrant.checked) {
-    let colIndexOff = COLUMN_NAMES.indexOf("OfficialEntrant");
-    rtnData = rtnData.filter((item) => {
-      const columnValue = item[Object.keys(item)[colIndexOff]];
-      return columnValue == "TRUE";
+  // Filter for official entrants
+  if (elyOfficialEntrant && elyOfficialEntrant.checked) {
+    filteredData = filteredData.filter(item => {
+      const isOfficial = item["OfficialEntrant"];
+      return isOfficial === "TRUE";
     });
   }
 
-  writeHeaderInfo(rtnData.length, raceData.length);
-  return rtnData;
+  // Update header with count information
+  writeHeaderInfo(filteredData.length, raceData.length);
+
+  return filteredData;
 }
 
 // -----------------------------------------------------
 
 function sortTable(colKey) {
-  let colIndex = COLUMN_NAMES.indexOf(colKey);
-  let isSortAscending = !columnSortDirections[colIndex];
+  if (!COLUMN_NAMES.includes(colKey)) {
+    console.error(`Invalid column key: ${colKey}`);
+    return;
+  }
+
+  const colIndex = COLUMN_NAMES.indexOf(colKey);
+  const isSortAscending = !columnSortDirections[colIndex];
   columnSortDirections[colIndex] = isSortAscending;
 
   raceData.sort((a, b) => {
     let aValue = a[colKey];
     let bValue = b[colKey];
 
-    if (colKey == "OverallOrder" || colKey == "MarathonNumber") {
-      // Because all records don't have Marathon Number we want these records sorting to the bottom
+    // Ensure we have string values for comparison
+    aValue = aValue !== undefined ? String(aValue) : '';
+    bValue = bValue !== undefined ? String(bValue) : '';
+
+    if (colKey === "OverallOrder" || colKey === "MarathonNumber") {
+      // Handle empty values for numerical sorting
       if (isSortAscending) {
-        if (aValue == "") aValue = -9999;
-        if (bValue == "") bValue = -9999;
+        if (aValue === "") aValue = "-9999";
+        if (bValue === "") bValue = "-9999";
       } else {
-        if (aValue == "") aValue = 9999;
-        if (bValue == "") bValue = 9999;
+        if (aValue === "") aValue = "9999";
+        if (bValue === "") bValue = "9999";
       }
 
-      let intA = parseInt(aValue);
-      let intB = parseInt(bValue);
+      const intA = parseInt(aValue, 10) || 0;
+      const intB = parseInt(bValue, 10) || 0;
 
-      if (isSortAscending) return parseInt(intB) - parseInt(intA);
-      else return parseInt(intA) - parseInt(intB);
+      return isSortAscending ? intB - intA : intA - intB;
     }
-    else if (colKey == "Date") {
+    else if (colKey === "Date") {
       if (isValidDate(aValue) && isValidDate(bValue)) {
-        let dateA = parseDate(aValue);
-        let dateB = parseDate(bValue);
-        return dateA - dateB;
+        const dateA = parseDate(aValue);
+        const dateB = parseDate(bValue);
+        return isSortAscending ? dateB - dateA : dateA - dateB;
       }
-      if (isSortAscending) return aValue.localeCompare(bValue);
-      else return bValue.localeCompare(aValue);
+      return isSortAscending ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
     }
-    else if (colKey == "FinishTime") {
-      let timeA = parseTime(aValue);
-      let timeB = parseTime(bValue);
-      if (isSortAscending) return timeA - timeB;
-      else return timeB - timeA;
+    else if (colKey === "FinishTime") {
+      const timeA = parseTime(aValue);
+      const timeB = parseTime(bValue);
+      return isSortAscending ? timeB - timeA : timeA - timeB;
     }
-    // else if (colKey == "Link" || colKey == "Images") {
-    //   let varA;
-    //   let varB;
-    //   if (!aValue || aValue.length == 0)
-    //     varA = undefined;
-    //   else
-    //     varA = aValue[0];
-
-    //   if (!bValue || bValue.length == 0)
-    //     varB = undefined;
-    //   else
-    //     varB = bValue[0];
-
-    //   let txtA = parseInt(varA);
-    //   let txtB = parseInt(varB);
-    //   if (isSortAscending) return txtA - txtB;
-    //   else return txtB - txtA;
-    // }
     else {
-      if (isSortAscending) return aValue.localeCompare(bValue);
-      else return bValue.localeCompare(aValue);
+      return isSortAscending ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
     }
   });
 
-  makeDisplayTable(); // raceData);
+  makeDisplayTable();
 }
 
 // -----------------------------------------------------
 
 function makeDisplayTable() {
-  let displayData = filterDatacheck();
-
+  const displayData = filterDatacheck();
   const tableBody = document.getElementById("tableBody");
+
+  // Create a document fragment for better performance
+  const fragment = document.createDocumentFragment();
+
+  // Clear existing content
   tableBody.innerHTML = "";
 
+  // Helper function to sanitize HTML content
+  const sanitizeHTML = (html) => {
+    const temp = document.createElement('div');
+    temp.textContent = html;
+    return temp.innerHTML;
+  };
+
   displayData.forEach((rowData) => {
-    /* *** rowData
-      BackupImages: (3) ['232c.jpg', '232b.jpg', '232a.jpg']
-      Date: "11/15/2015"
-      FinishTime: "4:40:00"
-      Images: []
-      IsMarathon: "TRUE"
-      Link: [{…}]
-      MarathonNumber: "232"
-      OfficialEntrant: "TRUE"
-      OverallOrder: "240"
-      RaceName: "Myles Standish Marathon"
-      String: "3    Joe Beyer     
-    */
     const row = document.createElement("tr");
-    let iColCounter = 0;
+
     Object.keys(rowData).forEach((key) => {
       const keyValue = rowData[key];
       const cell = document.createElement("td");
 
       if (key === "Link") {
         const link = rowData[key][0];
-        if (link) {
-          cell.innerHTML = `<a href="${link.URL}" target="_blank">${link.Desc}</a>`;
+        if (link && link.URL && link.Desc) {
+          // Create a proper DOM element instead of using innerHTML
+          const anchor = document.createElement('a');
+          anchor.href = link.URL;
+          anchor.textContent = link.Desc;
+          anchor.target = "_blank";
+          anchor.rel = "noopener noreferrer"; // Security best practice
+          cell.appendChild(anchor);
         }
       } else if (key === "Images" || key === "BackupImages") {
-        let imgs = rowData[key];
-        let outputHtml = "";
-        let characterCount = 0;
-        imgs.forEach((x) => {
-          // outputHtml += `<img src="/marathonPix/${x}" alt="${x}"> `;
-          characterCount = characterCount + x.length;
+        const imgs = rowData[key];
+        if (Array.isArray(imgs) && imgs.length > 0) {
+          let characterCount = 0;
 
-          if (isDevelopmentServer)
-            outputHtml += `<a href="/marathonPix/${x}" target="_blank">${x}</a>`;
-          else
-            outputHtml += `<a href="/Races/marathonPix/${x}" target="_blank">${x}</a>`;
+          imgs.forEach((imgPath) => {
+            if (!imgPath) return;
 
-          // Limit how many images before newline
-          if (characterCount > 85) {
-            outputHtml += `<br>`;
-            characterCount = 0;
-          }
-        });
-        cell.innerHTML = outputHtml; // rowData[key].join(", ");
-      } else if (key === "IsMarathon") {
-        cell.innerHTML = keyValue === "TRUE" ? "✓" : "";
-        cell.style.textAlign = "center";
-      } else if (key === "OfficialEntrant") {
-        cell.innerHTML = keyValue === "TRUE" ? "✓" : "";
+            characterCount += imgPath.length;
+
+            const anchor = document.createElement('a');
+            anchor.href = isDevelopmentServer
+              ? `/marathonPix/${imgPath}`
+              : `/Races/marathonPix/${imgPath}`;
+            anchor.textContent = imgPath;
+            anchor.target = "_blank";
+            anchor.rel = "noopener noreferrer";
+            cell.appendChild(anchor);
+
+            // Add line break if needed
+            if (characterCount > 85) {
+              cell.appendChild(document.createElement('br'));
+              characterCount = 0;
+            }
+          });
+        }
+      } else if (key === "IsMarathon" || key === "OfficialEntrant") {
+        cell.textContent = keyValue === "TRUE" ? "✓" : "";
         cell.style.textAlign = "center";
       } else if (key === "String") {
-        cell.innerHTML = rowData[key];
+        // Use safer innerHTML assignment
+        const sanitized = rowData[key].replace(/<\/BR>/gi, '<br>');
+        cell.innerHTML = sanitized;
       } else {
-        cell.textContent = rowData[key];
+        cell.textContent = rowData[key] || "";
       }
 
       row.appendChild(cell);
     });
-    tableBody.appendChild(row);
+
+    fragment.appendChild(row);
   });
+
+  tableBody.appendChild(fragment);
 }
-
-
 
 // -----------------------------------------------------
 
@@ -242,33 +257,80 @@ function handleResetClick() {
 
 // *********************************************************
 // *** HELPERS
+/**
+ * Checks if a string represents a valid date
+ * @param {string} dateString - The date string to validate
+ * @return {boolean} - True if the date is valid
+ */
 function isValidDate(dateString) {
-  // Check if Date.parse() returns a valid date (not NaN) and the parsed date is not equal to "Invalid Date"
+  if (!dateString || typeof dateString !== 'string') {
+    return false;
+  }
+
+  // Check if the date format is MM/DD/YYYY
+  const dateRegex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
+  if (!dateRegex.test(dateString)) {
+    return false;
+  }
+
+  // Parse the date parts and check if they form a valid date
+  const [, month, day, year] = dateString.match(dateRegex);
+
+  // Create a new date and verify the components match what was provided
+  const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10));
   return (
-    !isNaN(Date.parse(dateString)) && new Date(dateString) !== "Invalid Date"
+    date.getFullYear() === parseInt(year, 10) &&
+    date.getMonth() === parseInt(month, 10) - 1 &&
+    date.getDate() === parseInt(day, 10)
   );
 }
 
-// ----------------------------------------------------------
-
+/**
+ * Parses a date string in MM/DD/YYYY format
+ * @param {string} dateString - The date string to parse
+ * @return {Date} - The parsed Date object
+ */
 function parseDate(dateString) {
-  var parts = dateString.split("/");
-  // Note: months are 0-based in JavaScript Date, so we need to subtract 1
-  return new Date(parts[2], parts[0] - 1, parts[1]);
+  if (!dateString || !isValidDate(dateString)) {
+    // Return a default date if input is invalid
+    return new Date(1970, 0, 1);
+  }
+
+  const parts = dateString.split('/');
+  const month = parseInt(parts[0], 10) - 1; // Months are 0-based in JavaScript
+  const day = parseInt(parts[1], 10);
+  const year = parseInt(parts[2], 10);
+
+  return new Date(year, month, day);
 }
 
 // ----------------------------------------------------------
 
 function parseTime(timeString) {
-  timeString = timeString.replace("~", "");
-  timeString = timeString.replace("?", "0");
-  timeString = timeString.replace("x", "0");
-  timeString = timeString.replace("~unknown~", "");
-  timeString = timeString.replace("unknown~", "");
-  let timeParts = timeString.split(":");
-  if (!timeParts.length == 2) timeParts.push("00");
+  // Handle null or undefined values
+  if (!timeString) return new Date(1970, 0, 1, 0, 0, 0);
 
-  return new Date(1970, 0, 1, timeParts[0], timeParts[1], timeParts[2]);
+  // Clean up the time string
+  timeString = timeString.replace("~", "")
+    .replace("?", "0")
+    .replace("x", "0")
+    .replace("~unknown~", "")
+    .replace("unknown~", "");
+
+  // Split into hours, minutes, seconds
+  let timeParts = timeString.split(":");
+
+  // Fix logic error: add seconds if needed
+  if (timeParts.length !== 2) {
+    timeParts.push("00");
+  }
+
+  // Ensure all parts are valid numbers
+  const hours = parseInt(timeParts[0]) || 0;
+  const minutes = parseInt(timeParts[1]) || 0;
+  const seconds = parseInt(timeParts[2]) || 0;
+
+  return new Date(1970, 0, 1, hours, minutes, seconds);
 }
 // -----------------------------------------------------
 
