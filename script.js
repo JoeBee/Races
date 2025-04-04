@@ -1,9 +1,9 @@
 'use strict';
 
-let raceData = []; // Read once upon page load
-let originalRaceData = []; // Used in resets to clear sort order
+// Global variables
+let raceData = [];
+let originalRaceData = [];
 let columnSortDirections = [false, false, false, false, false, false, false];
-
 let isDevelopmentServer = false;
 
 const COLUMN_NAMES = [
@@ -19,13 +19,33 @@ const COLUMN_NAMES = [
   "String",
 ];
 
-// ----------------------------------------------------------
+// ===== Event Listeners =====
 
-// *** Page Load
-document.addEventListener("DOMContentLoaded", function () {
-  let hostname = window.location.hostname;
-  isDevelopmentServer = hostname === "localhost";
+document.addEventListener("DOMContentLoaded", initializeApp);
 
+function initializeApp() {
+  // Determine if we're running on development server
+  isDevelopmentServer = window.location.hostname === "localhost";
+
+  // Set up scroll button event listeners
+  document.getElementById("scroll-up").addEventListener("click", scrollToTop);
+  document.getElementById("scroll-down").addEventListener("click", scrollToBottom);
+
+  // Load race data
+  loadRaceData();
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function scrollToBottom() {
+  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+}
+
+// ===== Data Loading =====
+
+function loadRaceData() {
   // Show loading indicator
   const tableBody = document.getElementById("tableBody");
   tableBody.innerHTML = "<tr><td colspan='10' style='text-align:center;'>Loading data...</td></tr>";
@@ -42,37 +62,39 @@ document.addEventListener("DOMContentLoaded", function () {
         throw new Error('Invalid data format: expected an array');
       }
       raceData = data;
-      originalRaceData = JSON.parse(JSON.stringify(data)); // Break the reference
+      originalRaceData = JSON.parse(JSON.stringify(data)); // Deep copy
       makeDisplayTable();
     })
     .catch(error => {
       console.error("Error fetching or processing data:", error);
       tableBody.innerHTML = `<tr><td colspan='10' style='text-align:center;color:red;'>Error loading data: ${error.message}</td></tr>`;
     });
-});
+}
 
-// ----------------------------------------------------------
-// Right side scroll arrows
-document.getElementById("scroll-up").addEventListener("click", function () {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
-
-document.getElementById("scroll-down").addEventListener("click", function () {
-  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-});
-
-// ----------------------------------------------------------
-
-// To implement 3-state check boxes the best way seems to be
-// // to include a hidden inputbox, not implemented here (yet)
-// const checkbox = document.getElementById("myCheckbox");
-// const stateInput = document.getElementById("checkboxState");
+// ===== Event Handlers =====
 
 function handleCheckboxClick(columnKey) {
   makeDisplayTable();
 }
 
-// -----------------------------------------------------
+function handleResetClick() {
+  // Reset checkboxes
+  const elyIsMarathon = document.getElementById("IsMarathon");
+  const elyOfficialEntrant = document.getElementById("OfficialEntrant");
+  elyIsMarathon.checked = false;
+  elyOfficialEntrant.checked = false;
+
+  // Reset sort directions
+  columnSortDirections = [false, false, false, false, false, false, false];
+
+  // Reset data to original
+  raceData = JSON.parse(JSON.stringify(originalRaceData)); // Deep copy
+
+  // Update display
+  makeDisplayTable();
+}
+
+// ===== Data Processing =====
 
 function filterDatacheck() {
   const elyIsMarathon = document.getElementById("IsMarathon");
@@ -83,18 +105,12 @@ function filterDatacheck() {
 
   // Filter for marathon events
   if (elyIsMarathon && elyIsMarathon.checked) {
-    filteredData = filteredData.filter(item => {
-      const isMarathon = item["IsMarathon"];
-      return isMarathon === "TRUE";
-    });
+    filteredData = filteredData.filter(item => item["IsMarathon"] === "TRUE");
   }
 
   // Filter for official entrants
   if (elyOfficialEntrant && elyOfficialEntrant.checked) {
-    filteredData = filteredData.filter(item => {
-      const isOfficial = item["OfficialEntrant"];
-      return isOfficial === "TRUE";
-    });
+    filteredData = filteredData.filter(item => item["OfficialEntrant"] === "TRUE");
   }
 
   // Update header with count information
@@ -102,8 +118,6 @@ function filterDatacheck() {
 
   return filteredData;
 }
-
-// -----------------------------------------------------
 
 function sortTable(colKey) {
   if (!COLUMN_NAMES.includes(colKey)) {
@@ -116,42 +130,24 @@ function sortTable(colKey) {
   columnSortDirections[colIndex] = isSortAscending;
 
   raceData.sort((a, b) => {
-    let aValue = a[colKey];
-    let bValue = b[colKey];
+    let aValue = a[colKey] || '';
+    let bValue = b[colKey] || '';
 
     // Ensure we have string values for comparison
-    aValue = aValue !== undefined ? String(aValue) : '';
-    bValue = bValue !== undefined ? String(bValue) : '';
+    aValue = String(aValue);
+    bValue = String(bValue);
 
     if (colKey === "OverallOrder" || colKey === "MarathonNumber") {
-      // Handle empty values for numerical sorting
-      if (isSortAscending) {
-        if (aValue === "") aValue = "-9999";
-        if (bValue === "") bValue = "-9999";
-      } else {
-        if (aValue === "") aValue = "9999";
-        if (bValue === "") bValue = "9999";
-      }
-
-      const intA = parseInt(aValue, 10) || 0;
-      const intB = parseInt(bValue, 10) || 0;
-
-      return isSortAscending ? intB - intA : intA - intB;
+      return handleNumericSort(aValue, bValue, isSortAscending);
     }
     else if (colKey === "Date") {
-      if (isValidDate(aValue) && isValidDate(bValue)) {
-        const dateA = parseDate(aValue);
-        const dateB = parseDate(bValue);
-        return isSortAscending ? dateB - dateA : dateA - dateB;
-      }
-      return isSortAscending ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
+      return handleDateSort(aValue, bValue, isSortAscending);
     }
     else if (colKey === "FinishTime") {
-      const timeA = parseTime(aValue);
-      const timeB = parseTime(bValue);
-      return isSortAscending ? timeB - timeA : timeA - timeB;
+      return handleTimeSort(aValue, bValue, isSortAscending);
     }
     else {
+      // Default string comparison
       return isSortAscending ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
     }
   });
@@ -159,7 +155,33 @@ function sortTable(colKey) {
   makeDisplayTable();
 }
 
-// -----------------------------------------------------
+function handleNumericSort(aValue, bValue, isSortAscending) {
+  // Handle empty values for numerical sorting
+  if (aValue === "") aValue = isSortAscending ? "-9999" : "9999";
+  if (bValue === "") bValue = isSortAscending ? "-9999" : "9999";
+
+  const intA = parseInt(aValue, 10) || 0;
+  const intB = parseInt(bValue, 10) || 0;
+
+  return isSortAscending ? intB - intA : intA - intB;
+}
+
+function handleDateSort(aValue, bValue, isSortAscending) {
+  if (isValidDate(aValue) && isValidDate(bValue)) {
+    const dateA = parseDate(aValue);
+    const dateB = parseDate(bValue);
+    return isSortAscending ? dateB - dateA : dateA - dateB;
+  }
+  return isSortAscending ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
+}
+
+function handleTimeSort(aValue, bValue, isSortAscending) {
+  const timeA = parseTime(aValue);
+  const timeB = parseTime(bValue);
+  return isSortAscending ? timeB - timeA : timeA - timeB;
+}
+
+// ===== UI Functions =====
 
 function makeDisplayTable() {
   const displayData = filterDatacheck();
@@ -171,57 +193,19 @@ function makeDisplayTable() {
   // Clear existing content
   tableBody.innerHTML = "";
 
-  // Helper function to sanitize HTML content
-  const sanitizeHTML = (html) => {
-    const temp = document.createElement('div');
-    temp.textContent = html;
-    return temp.innerHTML;
-  };
-
   displayData.forEach((rowData) => {
     const row = document.createElement("tr");
 
-    Object.keys(rowData).forEach((key) => {
+    COLUMN_NAMES.forEach((key) => {
+      if (!rowData.hasOwnProperty(key)) return;
+
       const keyValue = rowData[key];
       const cell = document.createElement("td");
 
       if (key === "Link") {
-        const link = rowData[key][0];
-        if (link && link.URL && link.Desc) {
-          // Create a proper DOM element instead of using innerHTML
-          const anchor = document.createElement('a');
-          anchor.href = link.URL;
-          anchor.textContent = link.Desc;
-          anchor.target = "_blank";
-          anchor.rel = "noopener noreferrer"; // Security best practice
-          cell.appendChild(anchor);
-        }
+        renderLinkCell(cell, rowData[key]);
       } else if (key === "Images" || key === "BackupImages") {
-        const imgs = rowData[key];
-        if (Array.isArray(imgs) && imgs.length > 0) {
-          let characterCount = 0;
-
-          imgs.forEach((imgPath) => {
-            if (!imgPath) return;
-
-            characterCount += imgPath.length;
-
-            const anchor = document.createElement('a');
-            anchor.href = isDevelopmentServer
-              ? `/marathonPix/${imgPath}`
-              : `/Races/marathonPix/${imgPath}`;
-            anchor.textContent = imgPath;
-            anchor.target = "_blank";
-            anchor.rel = "noopener noreferrer";
-            cell.appendChild(anchor);
-
-            // Add line break if needed
-            if (characterCount > 85) {
-              cell.appendChild(document.createElement('br'));
-              characterCount = 0;
-            }
-          });
-        }
+        renderImagesCell(cell, rowData[key]);
       } else if (key === "IsMarathon" || key === "OfficialEntrant") {
         cell.textContent = keyValue === "TRUE" ? "✓" : "";
         cell.style.textAlign = "center";
@@ -242,21 +226,60 @@ function makeDisplayTable() {
   tableBody.appendChild(fragment);
 }
 
-// -----------------------------------------------------
+function renderLinkCell(cell, links) {
+  if (!Array.isArray(links) || links.length === 0) return;
 
-function handleResetClick() {
-  let elyIsMarathon = document.getElementById("IsMarathon");
-  let elyOfficialEntrant = document.getElementById("OfficialEntrant");
-  elyIsMarathon.checked = false;
-  elyOfficialEntrant.checked = false;
-  columnSortDirections = [false, false, false, false, false, false, false];
-  raceData = JSON.parse(JSON.stringify(originalRaceData)); // Break the reference;
-
-  makeDisplayTable();
+  const link = links[0];
+  if (link && link.URL && link.Desc) {
+    const anchor = document.createElement('a');
+    anchor.href = link.URL;
+    anchor.textContent = link.Desc;
+    anchor.target = "_blank";
+    anchor.rel = "noopener noreferrer"; // Security best practice
+    cell.appendChild(anchor);
+  }
 }
 
-// *********************************************************
-// *** HELPERS
+function renderImagesCell(cell, imgs) {
+  if (!Array.isArray(imgs) || imgs.length === 0) return;
+
+  let characterCount = 0;
+
+  imgs.forEach((imgPath) => {
+    if (!imgPath) return;
+
+    characterCount += imgPath.length;
+
+    const anchor = document.createElement('a');
+    anchor.href = isDevelopmentServer
+      ? `/marathonPix/${imgPath}`
+      : `/Races/marathonPix/${imgPath}`;
+    anchor.textContent = imgPath;
+    anchor.target = "_blank";
+    anchor.rel = "noopener noreferrer";
+    cell.appendChild(anchor);
+
+    // Add line break if needed
+    if (characterCount > 85) {
+      cell.appendChild(document.createElement('br'));
+      characterCount = 0;
+    }
+  });
+}
+
+function writeHeaderInfo(iDisplaying, iTotalRecs) {
+  const myDiv = document.getElementById("dynamicText");
+  let displayText = "";
+  if (iDisplaying === iTotalRecs) {
+    displayText = `Displaying all ${iTotalRecs} records`;
+  } else {
+    displayText = `Displaying ${iDisplaying} of ${iTotalRecs} records`;
+  }
+  myDiv.textContent = displayText;
+}
+
+// ===== Helper Functions =====
+
 /**
  * Checks if a string represents a valid date
  * @param {string} dateString - The date string to validate
@@ -304,8 +327,11 @@ function parseDate(dateString) {
   return new Date(year, month, day);
 }
 
-// ----------------------------------------------------------
-
+/**
+ * Parses a time string in HH:MM:SS format
+ * @param {string} timeString - The time string to parse
+ * @return {Date} - The parsed Date object for comparison
+ */
 function parseTime(timeString) {
   // Handle null or undefined values
   if (!timeString) return new Date(1970, 0, 1, 0, 0, 0);
@@ -320,8 +346,8 @@ function parseTime(timeString) {
   // Split into hours, minutes, seconds
   let timeParts = timeString.split(":");
 
-  // Fix logic error: add seconds if needed
-  if (timeParts.length !== 2) {
+  // Add seconds if needed
+  if (timeParts.length !== 3) {
     timeParts.push("00");
   }
 
@@ -332,30 +358,3 @@ function parseTime(timeString) {
 
   return new Date(1970, 0, 1, hours, minutes, seconds);
 }
-// -----------------------------------------------------
-
-function writeHeaderInfo(iDisplaying, iTotalRecs) {
-  let myDiv = document.getElementById("dynamicText");
-  let displayText = "";
-  if (iDisplaying === iTotalRecs) {
-    displayText = `Displaying all ${iTotalRecs} records`;
-  } else {
-    displayText = `Displaying ${iDisplaying} of ${iTotalRecs} records`;
-  }
-  myDiv.textContent = displayText;
-}
-
-// -----------------------------------------------------
-
-// If you're creating header cells programmatically, add the style attribute
-function createTableHeader() {
-  // ... existing code ...
-
-  const headerCell = document.createElement("th");
-  headerCell.style.verticalAlign = "middle";
-  headerCell.style.height = "40px";
-
-  // ... rest of your code
-}
-
-// -----------------------------------------------------

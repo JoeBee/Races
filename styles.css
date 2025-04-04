@@ -1,3 +1,14 @@
+/* Base styles */
+:root {
+    --primary-bg: #f2f2f2;
+    --hover-bg: #e0e0e0;
+    --border-color: #ddd;
+    --text-color: #333;
+    --accent-color: #555;
+    --button-color: #555;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
 body {
     font-family: Verdana, Arial, sans-serif;
     margin: 0;
@@ -6,161 +17,10 @@ body {
     overflow-x: hidden;
     width: 100%;
     box-sizing: border-box;
-    /* Optional: prevents horizontal scrollbars */
+    color: var(--text-color);
 }
 
-/* ---------------------------------------------- */
-/* Table styles                                   */
-
-
-table {
-    font-family: Verdana, Arial, sans-serif;
-    font-size: 10px;
-    border-collapse: collapse;
-    width: 100%;
-    table-layout: fixed;
-    border-spacing: 0;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    max-width: none;
-    /* Ensure no max-width is applied */
-}
-
-/* Remove any potential container margins/padding */
-.table-container,
-div:has(> table) {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-th {
-    background-color: #f2f2f2;
-    padding: 10px;
-    text-align: left;
-    border-bottom: 2px solid #ddd;
-    transition: background-color 0.3s ease;
-}
-
-/* Change background color on hover */
-/* th:hover {
-    background-color: #e0e0e0;
-} */
-
-.th_hover_link:hover {
-    background-color: #e0e0e0;
-}
-
-.th_hover_link {
-    cursor: pointer;
-}
-
-/* Optional: Style for even table rows */
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-/* Optional: Style for odd table rows */
-tr:nth-child(odd) {
-    background-color: #ffffff;
-}
-
-/* ---------------------------------------------- */
-
-/* Styles for checkboxes with indeterminate state  */
-/* Intermediate checkboxes not implamented (yet)   */
-.tri-state-checkbox:indeterminate+label::before {
-    content: "-";
-    color: black;
-}
-
-/* Styles for checked state */
-.tri-state-checkbox:checked+label::before {
-    content: "✓";
-    color: green;
-}
-
-/* Styles for unchecked state */
-.tri-state-checkbox:not(:checked):not(:indeterminate)+label::before {
-    content: "×";
-    color: red;
-}
-
-/* ---------------------------------------------- */
-
-
-/* Order */
-th:nth-child(1),
-td:nth-child(1) {
-    width: 5%;
-    text-align: center;
-}
-
-/* Mar. # */
-th:nth-child(2),
-td:nth-child(2) {
-    width: 5%;
-    text-align: center;
-}
-
-/* Race Name */
-th:nth-child(3),
-td:nth-child(3) {
-    width: 14%;
-}
-
-/* Date */
-th:nth-child(4),
-td:nth-child(4) {
-    width: 6%;
-    text-align: center;
-}
-
-/* Finish Time */
-th:nth-child(5),
-td:nth-child(5) {
-    width: 6%;
-    text-align: center;
-}
-
-/* Marathon and Ultras Only */
-th:nth-child(6),
-td:nth-child(6) {
-    width: 7%;
-    text-align: center;
-}
-
-/* Official Entrant Only */
-th:nth-child(7),
-td:nth-child(7) {
-    width: 7%;
-    text-align: center;
-}
-
-/* String */
-th:nth-child(8),
-td:nth-child(8) {
-    width: 19%;
-}
-
-/* Playlist */
-th:nth-child(9),
-td:nth-child(9) {
-    width: 6%;
-    text-align: center;
-}
-
-/* Images - last column to fill remaining space */
-th:nth-child(10),
-td:nth-child(10) {
-    width: 25%;
-}
-
-/* ---------------------------------------------- */
-
-/* Top DIV styling */
+/* Header styles */
 .topDivContainer {
     display: flex;
     justify-content: space-between;
@@ -172,29 +32,25 @@ td:nth-child(10) {
     border-radius: 5px 5px 0 0;
 }
 
-/* Page title styling */
 .page-title {
-    color: #333;
+    color: var(--text-color);
     margin: 0;
     font-size: 28px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 1px 1px 2px var(--shadow-color);
 }
 
-/* Container for dynamic text and reset button */
 .dynamic-text-container {
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
-/* Style for the dynamic text */
 .dynamic-text {
     font-weight: bold;
-    color: #555;
+    color: var(--accent-color);
     font-size: 18px;
 }
 
-/* Style for the reset button image */
 .dynamic-text-container img {
     cursor: pointer;
     transition: transform 0.2s;
@@ -203,23 +59,156 @@ td:nth-child(10) {
     padding: 5px;
     border-radius: 50%;
     background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
-/* Hover effect for the reset button */
 .dynamic-text-container img:hover {
     transform: rotate(20deg);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px var(--shadow-color);
 }
 
-/* ---------------------------------------------- */
-
-/* *** Right side scroll arrows */
-
-.content {
-    padding: 20px;
+/* Table styles */
+table {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 10px;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    border-spacing: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+th {
+    background-color: var(--primary-bg);
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+    transition: background-color 0.3s ease;
+    vertical-align: middle;
+    height: 40px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.th_hover_link {
+    cursor: pointer;
+}
+
+.th_hover_link:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Row styling */
+tr:nth-child(even) {
+    background-color: var(--primary-bg);
+}
+
+tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+/* Column widths */
+th:nth-child(1),
+td:nth-child(1) {
+    width: 5%;
+    text-align: center;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+    width: 5%;
+    text-align: center;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+    width: 14%;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+    width: 6%;
+    text-align: center;
+}
+
+th:nth-child(5),
+td:nth-child(5) {
+    width: 6%;
+    text-align: center;
+}
+
+th:nth-child(6),
+td:nth-child(6) {
+    width: 7%;
+    text-align: center;
+}
+
+th:nth-child(7),
+td:nth-child(7) {
+    width: 7%;
+    text-align: center;
+}
+
+th:nth-child(8),
+td:nth-child(8) {
+    width: 19%;
+}
+
+th:nth-child(9),
+td:nth-child(9) {
+    width: 6%;
+    text-align: center;
+}
+
+th:nth-child(10),
+td:nth-child(10) {
+    width: 25%;
+}
+
+/* Checkbox styling for filters */
+.tri-state-checkbox:indeterminate+label::before {
+    content: "-";
+    color: black;
+}
+
+.tri-state-checkbox:checked+label::before {
+    content: "✓";
+    color: green;
+}
+
+.tri-state-checkbox:not(:checked):not(:indeterminate)+label::before {
+    content: "×";
+    color: red;
+}
+
+/* Cell styling */
+td:first-child {
+    padding-left: 10px;
+}
+
+/* Special styling for marathon and official entrant columns */
+td:nth-child(6),
+td:nth-child(7) {
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+/* Sticky table header */
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+thead th {
+    background-color: var(--primary-bg);
+    box-shadow: 0 1px 2px var(--shadow-color);
+    text-align: center;
+}
+
+/* Scroll buttons */
 .scroll-buttons {
     position: fixed;
     right: 20px;
@@ -229,8 +218,7 @@ td:nth-child(10) {
 }
 
 .scroll-button {
-    /* background-color: #007bff; */
-    background-color: gray;
+    background-color: var(--button-color);
     border: none;
     color: white;
     padding: 10px;
@@ -246,135 +234,21 @@ td:nth-child(10) {
     opacity: 1;
 }
 
-th:first-child {
-    padding-left: 10px;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .topDivContainer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .dynamic-text {
+        font-size: 14px;
+    }
+
+    th,
+    td {
+        padding: 5px;
+        font-size: 9px;
+    }
 }
-
-td:first-child {
-    padding-left: 40px;
-}
-
-/* ---------------------------------------------- */
-
-/* Add this CSS to center the text in table headers vertically */
-thead th {
-    vertical-align: middle;
-    text-align: center;
-    height: 40px;
-    padding: 8px;
-    line-height: 1.2;
-    display: table-cell;
-    font-size: 12px;
-    font-weight: bold;
-    background-color: #f5f5f5;
-    box-shadow: none;
-    border-top: none;
-}
-
-/* Add specific styling for the Marathon+ Only and Official Entrant Only columns */
-th:nth-child(6),
-/* IsMarathon column */
-th:nth-child(7)
-
-/* OfficialEntrant column */
-    {
-    vertical-align: middle;
-    text-align: center;
-    padding-top: 12px;
-    padding-bottom: 12px;
-}
-
-/* Make sure the checkmark cells are also vertically centered */
-td:nth-child(6),
-td:nth-child(7) {
-    vertical-align: middle;
-    font-size: 14px;
-    /* Makes the checkmark slightly larger */
-}
-
-/* Make the table header sticky so it's always visible when scrolling */
-thead {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    /* Ensures the header stays above the table content */
-}
-
-/* Ensure the header has a solid background so content doesn't show through */
-thead th {
-    vertical-align: middle;
-    text-align: center;
-    height: 40px;
-    padding: 8px;
-    line-height: 1.2;
-    display: table-cell;
-    font-size: 12px;
-    font-weight: bold;
-    background-color: #f2f2f2;
-    /* Match your existing header background */
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    /* Optional: adds a subtle shadow */
-}
-
-/* Keep the dynamic text aligned to the right */
-.dynamic-text-container {
-    display: flex;
-    align-items: center;
-}
-
-/* Adjust the column widths to exactly 100% total */
-th:nth-child(1),
-td:nth-child(1) {
-    width: 5%;
-}
-
-th:nth-child(2),
-td:nth-child(2) {
-    width: 5%;
-}
-
-th:nth-child(3),
-td:nth-child(3) {
-    width: 14%;
-}
-
-th:nth-child(4),
-td:nth-child(4) {
-    width: 6%;
-}
-
-th:nth-child(5),
-td:nth-child(5) {
-    width: 6%;
-}
-
-th:nth-child(6),
-td:nth-child(6) {
-    width: 7%;
-}
-
-/* Reduced from 8% */
-th:nth-child(7),
-td:nth-child(7) {
-    width: 7%;
-}
-
-/* Reduced from 8% */
-th:nth-child(8),
-td:nth-child(8) {
-    width: 19%;
-}
-
-/* Reduced from 20% */
-th:nth-child(9),
-td:nth-child(9) {
-    width: 6%;
-}
-
-/* Reduced from 7% */
-th:nth-child(10),
-td:nth-child(10) {
-    width: 25%;
-}
-
-/* Reduced from 27% */
