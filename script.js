@@ -14,9 +14,9 @@ const COLUMN_NAMES = [
   "FinishTime",
   "IsMarathon",
   "OfficialEntrant",
-  "Link",
-  "Images",
   "String",
+  "Link",
+  "Images"
 ];
 
 // ===== Event Listeners =====
