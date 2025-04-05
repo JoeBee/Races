@@ -5,8 +5,6 @@ let raceData = [];
 let originalRaceData = [];
 let columnSortDirections = [false, false, false, false, false, false, false];
 let isDevelopmentServer = false;
-let currentImageIndex = 0;
-let currentImages = [];
 
 const COLUMN_NAMES = [
   "OverallOrder",
@@ -263,7 +261,10 @@ function renderImagesCell(cell, imgs) {
     anchor.dataset.imagePath = imgPath;
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
-      openImageViewer(imgs, index);
+      // Use the ImageViewer component to show images
+      if (window.ImageViewer) {
+        window.ImageViewer.openImageViewer(imgs, index);
+      }
     });
 
     imageContainer.appendChild(anchor);
@@ -369,106 +370,3 @@ function parseTime(timeString) {
 
   return new Date(1970, 0, 1, hours, minutes, seconds);
 }
-
-// Image Viewer Functions
-function openImageViewer(images, startIndex) {
-  currentImages = images;
-  currentImageIndex = startIndex;
-
-  const modal = document.getElementById('imageViewerModal');
-  const imageElement = document.getElementById('currentImage');
-
-  updateImageDisplay();
-  modal.style.display = 'block';
-
-  // Add event listeners for navigation
-  document.getElementById('prevImageBtn').onclick = showPreviousImage;
-  document.getElementById('nextImageBtn').onclick = showNextImage;
-
-  // Close button event
-  document.querySelector('.close-button').onclick = function () {
-    modal.style.display = 'none';
-  };
-
-  // Close on click outside content
-  modal.onclick = function (event) {
-    if (event.target === modal) {
-      modal.style.display = 'none';
-    }
-  };
-
-  // Keyboard navigation
-  document.addEventListener('keydown', handleKeyboardNavigation);
-}
-
-function updateImageDisplay() {
-  const imageElement = document.getElementById('currentImage');
-  const counter = document.getElementById('imageCounter');
-  const imagePath = currentImages[currentImageIndex];
-
-  // Set image source with correct path
-  imageElement.src = isDevelopmentServer
-    ? `/marathonPix/${imagePath}`
-    : `/Races/marathonPix/${imagePath}`;
-
-  // Update counter
-  counter.textContent = `${currentImageIndex + 1}/${currentImages.length}`;
-}
-
-function showPreviousImage() {
-  currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length;
-  updateImageDisplay();
-}
-
-function showNextImage() {
-  currentImageIndex = (currentImageIndex + 1) % currentImages.length;
-  updateImageDisplay();
-}
-
-function handleKeyboardNavigation(event) {
-  const modal = document.getElementById('imageViewerModal');
-
-  // Only process keyboard events if modal is visible
-  if (modal.style.display !== 'block') {
-    return;
-  }
-
-  switch (event.key) {
-    case 'ArrowLeft':
-      showPreviousImage();
-      break;
-    case 'ArrowRight':
-      showNextImage();
-      break;
-    case 'Escape':
-      modal.style.display = 'none';
-      break;
-  }
-}
-
-// Clean up event listeners when modal is closed
-function closeImageViewer() {
-  document.removeEventListener('keydown', handleKeyboardNavigation);
-}
-
-// Add event listener for the DOMContentLoaded event
-document.addEventListener("DOMContentLoaded", function () {
-  // Existing initialization code
-  initializeApp();
-
-  // Set up event listener for modal closing
-  const modal = document.getElementById('imageViewerModal');
-  const closeButton = document.querySelector('.close-button');
-
-  closeButton.addEventListener('click', function () {
-    modal.style.display = 'none';
-    closeImageViewer();
-  });
-
-  modal.addEventListener('click', function (event) {
-    if (event.target === modal) {
-      modal.style.display = 'none';
-      closeImageViewer();
-    }
-  });
-});

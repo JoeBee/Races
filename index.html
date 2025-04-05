@@ -8,6 +8,7 @@
     <title>Joe's Races</title>
     <link rel="icon" href="./favicon.ico">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="components/imageViewer.css">
 </head>
 
 <body>
@@ -51,22 +52,8 @@
         <button id="scroll-down" class="scroll-button" aria-label="Scroll to bottom">&#9660;</button>
     </div>
 
-    <!-- Image Viewer Modal -->
-    <div id="imageViewerModal" class="image-viewer-modal">
-        <div class="image-viewer-content">
-            <span class="close-button">&times;</span>
-            <div class="image-container">
-                <img id="currentImage" src="" alt="Race image">
-            </div>
-            <div class="navigation-buttons">
-                <button id="prevImageBtn" class="nav-button" aria-label="Previous image">&#10094;</button>
-                <span id="imageCounter">1/1</span>
-                <button id="nextImageBtn" class="nav-button" aria-label="Next image">&#10095;</button>
-            </div>
-        </div>
-    </div>
-
     <script src="script.js"></script>
+    <script src="components/imageViewer.js"></script>
 </body>
 
 </html>
