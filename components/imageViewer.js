@@ -99,8 +99,9 @@ const ImageViewer = (function () {
         const imagePath = currentImages[currentImageIndex];
 
         // Set image source with correct path
+        console.log('isDevelopmentServer:', isDevelopmentServer);
         imageElement.src = isDevelopmentServer
-            ? `/marathonPix/${imagePath}`
+            ? `/Races/marathonPix/${imagePath}`
             : `/marathonPix/${imagePath}`;
 
         // Update counter
