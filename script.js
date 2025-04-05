@@ -196,6 +196,9 @@ function makeDisplayTable() {
   displayData.forEach((rowData) => {
     const row = document.createElement("tr");
 
+    // Store the row data for easy access
+    row.__data__ = rowData;
+
     COLUMN_NAMES.forEach((key) => {
       if (!rowData.hasOwnProperty(key)) return;
 
@@ -249,6 +252,9 @@ function renderImagesCell(cell, imgs) {
   const imageContainer = document.createElement('div');
   imageContainer.className = 'image-links-container';
 
+  // Get the current row data object
+  const rowData = cell.parentNode ? cell.parentNode.__data__ : null;
+
   imgs.forEach((imgPath, index) => {
     if (!imgPath) return;
 
@@ -261,9 +267,19 @@ function renderImagesCell(cell, imgs) {
     anchor.dataset.imagePath = imgPath;
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
+
+      // Get the row data
+      const currentRow = this.closest('tr');
+      if (!currentRow) return;
+
+      // Find the race data from the displayed rows
+      const rowIndex = Array.from(currentRow.parentNode.children).indexOf(currentRow);
+      const displayData = filterDatacheck();
+      const raceData = displayData[rowIndex];
+
       // Use the ImageViewer component to show images
-      if (window.ImageViewer) {
-        window.ImageViewer.openImageViewer(imgs, index);
+      if (window.ImageViewer && raceData) {
+        window.ImageViewer.openImageViewer(imgs, index, raceData);
       }
     });
 

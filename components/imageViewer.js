@@ -5,6 +5,7 @@ const ImageViewer = (function () {
     // Variables
     let currentImageIndex = 0;
     let currentImages = [];
+    let currentRaceData = null;
     let isDevelopmentServer = false;
 
     // Initialize the viewer
@@ -68,17 +69,18 @@ const ImageViewer = (function () {
     }
 
     // Open the image viewer with a set of images
-    function openImageViewer(images, startIndex) {
+    function openImageViewer(images, startIndex, raceData) {
         const modal = document.getElementById('imageViewerModal');
 
         // If modal isn't loaded yet, wait and try again
         if (!modal) {
-            setTimeout(() => openImageViewer(images, startIndex), 100);
+            setTimeout(() => openImageViewer(images, startIndex, raceData), 100);
             return;
         }
 
         currentImages = images;
         currentImageIndex = startIndex;
+        currentRaceData = raceData;
 
         updateImageDisplay();
         modal.style.display = 'block';
@@ -99,10 +101,26 @@ const ImageViewer = (function () {
         // Set image source with correct path
         imageElement.src = isDevelopmentServer
             ? `/marathonPix/${imagePath}`
-            : `/Races/marathonPix/${imagePath}`;
+            : `/marathonPix/${imagePath}`;
 
         // Update counter
         counter.textContent = `${currentImageIndex + 1}/${currentImages.length}`;
+
+        // Update race information if available
+        updateRaceInfo();
+    }
+
+    // Update the race information
+    function updateRaceInfo() {
+        const marathonNumber = document.getElementById('raceMarathonNumber');
+        const raceName = document.getElementById('raceName');
+        const raceDate = document.getElementById('raceDate');
+
+        if (marathonNumber && raceName && raceDate && currentRaceData) {
+            marathonNumber.textContent = `#${currentRaceData.MarathonNumber}`;
+            raceName.textContent = currentRaceData.RaceName;
+            raceDate.textContent = currentRaceData.Date;
+        }
     }
 
     // Show the previous image
