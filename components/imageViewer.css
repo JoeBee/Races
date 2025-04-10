@@ -58,6 +58,16 @@
     gap: 20px;
 }
 
+.race-navigation-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    gap: 20px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 .nav-button {
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
@@ -73,11 +83,24 @@
     transition: background-color 0.3s;
 }
 
-.nav-button:hover {
+.race-navigation-buttons .nav-button {
+    border-radius: 20px;
+    width: auto;
+    padding: 0 15px;
+    font-size: 14px;
+}
+
+.nav-button:hover:not(:disabled) {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-#imageCounter {
+.nav-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#imageCounter,
+#raceCounter {
     color: white;
     font-size: 16px;
 }

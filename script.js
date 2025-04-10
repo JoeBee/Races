@@ -279,7 +279,7 @@ function renderImagesCell(cell, imgs) {
 
       // Use the ImageViewer component to show images
       if (window.ImageViewer && raceData) {
-        window.ImageViewer.openImageViewer(imgs, index, raceData);
+        window.ImageViewer.openImageViewer(imgs, index, raceData, displayData);
       }
     });
 

@@ -7,6 +7,9 @@ const ImageViewer = (function () {
     let currentImages = [];
     let currentRaceData = null;
     let isDevelopmentServer = false;
+    let allRaces = [];
+    let currentRaceIndex = 0;
+    let racesWithImages = [];
 
     // Initialize the viewer
     function init() {
@@ -42,12 +45,18 @@ const ImageViewer = (function () {
     function setupEventListeners() {
         const modal = document.getElementById('imageViewerModal');
         const closeButton = document.querySelector('.close-button');
-        const prevButton = document.getElementById('prevImageBtn');
-        const nextButton = document.getElementById('nextImageBtn');
+        const prevImageButton = document.getElementById('prevImageBtn');
+        const nextImageButton = document.getElementById('nextImageBtn');
+        const prevRaceButton = document.getElementById('prevRaceBtn');
+        const nextRaceButton = document.getElementById('nextRaceBtn');
 
-        // Navigation buttons
-        if (prevButton) prevButton.addEventListener('click', showPreviousImage);
-        if (nextButton) nextButton.addEventListener('click', showNextImage);
+        // Image Navigation buttons
+        if (prevImageButton) prevImageButton.addEventListener('click', showPreviousImage);
+        if (nextImageButton) nextImageButton.addEventListener('click', showNextImage);
+
+        // Race Navigation buttons
+        if (prevRaceButton) prevRaceButton.addEventListener('click', showPreviousRace);
+        if (nextRaceButton) nextRaceButton.addEventListener('click', showNextRace);
 
         // Close button
         if (closeButton) {
@@ -69,20 +78,33 @@ const ImageViewer = (function () {
     }
 
     // Open the image viewer with a set of images
-    function openImageViewer(images, startIndex, raceData) {
+    function openImageViewer(images, startIndex, raceData, races = []) {
         const modal = document.getElementById('imageViewerModal');
 
         // If modal isn't loaded yet, wait and try again
         if (!modal) {
-            setTimeout(() => openImageViewer(images, startIndex, raceData), 100);
+            setTimeout(() => openImageViewer(images, startIndex, raceData, races), 100);
             return;
         }
 
         currentImages = images;
         currentImageIndex = startIndex;
         currentRaceData = raceData;
+        allRaces = races;
+
+        // Filter races to only include those with images
+        racesWithImages = races.filter(race => race.Images && race.Images.length > 0);
+
+        // Find current race index in the filtered list
+        if (raceData && racesWithImages.length > 0) {
+            currentRaceIndex = racesWithImages.findIndex(race =>
+                race.MarathonNumber === raceData.MarathonNumber
+            );
+            if (currentRaceIndex === -1) currentRaceIndex = 0;
+        }
 
         updateImageDisplay();
+        updateRaceNavigation();
         modal.style.display = 'block';
 
         // Add keyboard navigation
@@ -119,11 +141,35 @@ const ImageViewer = (function () {
 
         if (marathonNumber && raceName && raceDate && currentRaceData) {
             if (currentRaceData.MarathonNumber) {
-                marathonNumber.textContent = `#${currentRaceData.MarathonNumber}`;
+                marathonNumber.textContent = `Marathon#${currentRaceData.MarathonNumber}`;
             }
             raceName.textContent = currentRaceData.RaceName;
             raceDate.textContent = currentRaceData.Date;
         }
+    }
+
+    // Update race navigation display
+    function updateRaceNavigation() {
+        const raceCounter = document.getElementById('raceCounter');
+        const prevRaceBtn = document.getElementById('prevRaceBtn');
+        const nextRaceBtn = document.getElementById('nextRaceBtn');
+
+        if (!raceCounter || !prevRaceBtn || !nextRaceBtn) return;
+
+        // Update race counter
+        // console.log('1. ', currentImageIndex);
+        // console.log('2. ', currentImages);
+        // console.log('3. ', currentRaceData);
+        // console.log('4. ', isDevelopmentServer);
+        // console.log('5. ', allRaces);
+        // console.log('6. ', currentRaceIndex);
+        // console.log('7. ', racesWithImages);
+
+        raceCounter.textContent = `Race ${currentRaceData.OverallOrder} of ${allRaces.length}`;
+
+        // Update button states
+        prevRaceBtn.disabled = currentRaceIndex === 0;
+        nextRaceBtn.disabled = currentRaceIndex === racesWithImages.length - 1;
     }
 
     // Show the previous image
@@ -138,6 +184,36 @@ const ImageViewer = (function () {
         updateImageDisplay();
     }
 
+    // Show the previous race
+    function showPreviousRace() {
+        if (currentRaceIndex > 0) {
+            currentRaceIndex--;
+            const raceData = racesWithImages[currentRaceIndex];
+            if (raceData && raceData.Images) {
+                currentImages = raceData.Images;
+                currentImageIndex = 0;
+                currentRaceData = raceData;
+                updateImageDisplay();
+                updateRaceNavigation();
+            }
+        }
+    }
+
+    // Show the next race
+    function showNextRace() {
+        if (currentRaceIndex < racesWithImages.length - 1) {
+            currentRaceIndex++;
+            const raceData = racesWithImages[currentRaceIndex];
+            if (raceData && raceData.Images) {
+                currentImages = raceData.Images;
+                currentImageIndex = 0;
+                currentRaceData = raceData;
+                updateImageDisplay();
+                updateRaceNavigation();
+            }
+        }
+    }
+
     // Handle keyboard navigation
     function handleKeyboardNavigation(event) {
         const modal = document.getElementById('imageViewerModal');
@@ -149,10 +225,18 @@ const ImageViewer = (function () {
 
         switch (event.key) {
             case 'ArrowLeft':
-                showPreviousImage();
+                if (event.shiftKey) {
+                    showPreviousRace();
+                } else {
+                    showPreviousImage();
+                }
                 break;
             case 'ArrowRight':
-                showNextImage();
+                if (event.shiftKey) {
+                    showNextRace();
+                } else {
+                    showNextImage();
+                }
                 break;
             case 'Escape':
                 modal.style.display = 'none';
