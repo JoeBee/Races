@@ -118,7 +118,9 @@ const ImageViewer = (function () {
         const raceDate = document.getElementById('raceDate');
 
         if (marathonNumber && raceName && raceDate && currentRaceData) {
-            marathonNumber.textContent = `#${currentRaceData.MarathonNumber}`;
+            if (currentRaceData.MarathonNumber) {
+                marathonNumber.textContent = `#${currentRaceData.MarathonNumber}`;
+            }
             raceName.textContent = currentRaceData.RaceName;
             raceDate.textContent = currentRaceData.Date;
         }

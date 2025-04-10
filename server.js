@@ -49,9 +49,11 @@ const server = http.createServer((req, res) => {
     if (err) {
       if (err.code === "ENOENT") {
         // File not found
+        console.error(`File not found: ${filePath}`);
         fs.readFile("./404.html", (err, content) => {
           if (err) {
             // 404 page not found, fallback to basic response
+            console.error(`404 page not found: ${err.code}`);
             res.writeHead(404, { "Content-Type": "text/html", ...SECURITY_HEADERS });
             res.end("<html><body><h1>404 Not Found</h1></body></html>", "utf-8");
           } else {
@@ -62,8 +64,10 @@ const server = http.createServer((req, res) => {
       } else {
         // Server error
         console.error(`Server error: ${err.code} for ${filePath}`);
+        console.error(`Error details: ${err.message}`);
+        console.error(`Stack trace: ${err.stack}`);
         res.writeHead(500, { "Content-Type": "text/html", ...SECURITY_HEADERS });
-        res.end(`<html><body><h1>500 Internal Server Error</h1><p>${err.code}</p></body></html>`, "utf-8");
+        res.end(`<html><body><h1>500 Internal Server Error</h1><p>${err.code}</p><p>${err.message}</p></body></html>`, "utf-8");
       }
     } else {
       // Successful response
