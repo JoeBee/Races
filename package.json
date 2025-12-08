@@ -1,0 +1,21 @@
+{
+  "name": "races",
+  "version": "1.0.0",
+  "description": "Joe's Races - A comprehensive record of Joe's running events",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "races",
+    "marathon",
+    "running"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}
+
