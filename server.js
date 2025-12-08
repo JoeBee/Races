@@ -3,6 +3,7 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const { exec } = require("child_process");
 
 // Content type mapping
 const CONTENT_TYPES = {
@@ -82,7 +83,48 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  const url = `http://localhost:${PORT}`;
+  console.log(`Server is running on ${url}`);
+  
+  // Open Chrome browser automatically
+  const platform = process.platform;
+  let command;
+  
+  if (platform === 'win32') {
+    // Windows: Use start command with chrome, which will find Chrome if installed
+    // If Chrome is not found, it will fall back to default browser
+    command = `start "" "${url}"`;
+    
+    // Try to use Chrome specifically if available
+    const chromePaths = [
+      process.env.LOCALAPPDATA + '\\Google\\Chrome\\Application\\chrome.exe',
+      'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+      'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
+    ];
+    
+    // Check if Chrome exists and use it, otherwise use default browser
+    for (const chromePath of chromePaths) {
+      if (fs.existsSync(chromePath)) {
+        command = `"${chromePath}" "${url}"`;
+        break;
+      }
+    }
+  } else if (platform === 'darwin') {
+    // macOS
+    command = `open -a "Google Chrome" "${url}"`;
+  } else {
+    // Linux
+    command = `google-chrome "${url}" || chromium-browser "${url}" || xdg-open "${url}"`;
+  }
+  
+  exec(command, (error) => {
+    if (error) {
+      console.log(`Note: Could not automatically open browser. Please navigate to ${url}`);
+      console.log(`Error: ${error.message}`);
+    } else {
+      console.log(`Opening ${url} in browser...`);
+    }
+  });
 });
 
 // Handle shutdown gracefully
