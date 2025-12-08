@@ -1,0 +1,11 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Rule for Races project - Always
+
+- Project only contains, HTML, CSS, Scripts and JSON.
+- No external libraries or frameworks.
+- JSON file is read creating an HTML table.
