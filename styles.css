@@ -257,6 +257,12 @@ thead th {
         font-size: 9px;
     }
 
+    /* Bigger scroll controls on phones */
+    .scroll-button {
+        font-size: 28px;
+        padding: 14px;
+    }
+
     /* Switch to mobile card layout */
     .table-wrap {
         display: none;

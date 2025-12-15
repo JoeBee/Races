@@ -1,7 +1,7 @@
 /* Service Worker for offline caching (no frameworks) */
 'use strict';
 
-const CACHE_NAME = 'races-v1';
+const CACHE_NAME = 'races-v3';
 
 // Keep this list small: don't precache the entire marathonPix folder.
 const PRECACHE_URLS = [
@@ -16,7 +16,11 @@ const PRECACHE_URLS = [
   './assets/refresh-icon.png',
   './components/imageViewer.css',
   './components/imageViewer.js',
-  './components/imageViewer.html'
+  './components/imageViewer.html',
+  './icons/apple-touch-icon.png',
+  './icons/icon-192.png',
+  './icons/icon-256.png',
+  './icons/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
