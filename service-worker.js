@@ -16,9 +16,7 @@ const PRECACHE_URLS = [
   './assets/refresh-icon.png',
   './components/imageViewer.css',
   './components/imageViewer.js',
-  './components/imageViewer.html',
-  './icons/icon-192.svg',
-  './icons/icon-512.svg'
+  './components/imageViewer.html'
 ];
 
 self.addEventListener('install', (event) => {
