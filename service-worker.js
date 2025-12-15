@@ -1,7 +1,7 @@
 /* Service Worker for offline caching (no frameworks) */
 'use strict';
 
-const CACHE_NAME = 'races-v3';
+const CACHE_NAME = 'races-v4';
 
 // Keep this list small: don't precache the entire marathonPix folder.
 const PRECACHE_URLS = [

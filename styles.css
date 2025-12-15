@@ -263,20 +263,24 @@ thead th {
         padding: 14px;
     }
 
-    /* Switch to mobile card layout */
-    .table-wrap {
-        display: none;
-    }
-
-    .card-container {
-        display: block;
-        padding: 10px;
-    }
+    /* Note: we don't hide the table by default on mobile.
+       JS adds .mobile-layout on <body> when cards are available.
+       This prevents a blank page if JS or data loading fails. */
 }
 
 /* Mobile card layout (hidden on desktop) */
 .card-container {
     display: none;
+}
+
+/* Enable card layout only when JS marks the page as mobile-layout */
+body.mobile-layout .table-wrap {
+    display: none;
+}
+
+body.mobile-layout .card-container {
+    display: block;
+    padding: 10px;
 }
 
 .race-card {

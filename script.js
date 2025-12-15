@@ -29,6 +29,9 @@ function initializeApp() {
   // Initialize sort direction state to match columns
   columnSortDirections = Array(COLUMN_NAMES.length).fill(false);
 
+  // Ensure layout class is applied as early as possible
+  applyLayoutClass();
+
   // Set up scroll button event listeners
   document.getElementById("scroll-up").addEventListener("click", scrollToTop);
   document.getElementById("scroll-down").addEventListener("click", scrollToBottom);
@@ -54,6 +57,7 @@ function loadRaceData() {
   // Show loading indicator
   const tableBody = document.getElementById("tableBody");
   tableBody.innerHTML = "<tr><td colspan='9' style='text-align:center;'>Loading data...</td></tr>";
+  showCardMessage("Loading data...", false);
 
   fetch("races.json")
     .then(response => {
@@ -68,11 +72,13 @@ function loadRaceData() {
       }
       raceData = data;
       originalRaceData = JSON.parse(JSON.stringify(data)); // Deep copy
+      applyLayoutClass(); // now that JS is running, enable cards on mobile
       renderUI();
     })
     .catch(error => {
       console.error("Error fetching or processing data:", error);
       tableBody.innerHTML = `<tr><td colspan='9' style='text-align:center;color:red;'>Error loading data: ${error.message}</td></tr>`;
+      showCardMessage(`Error loading data: ${error.message}`, true);
     });
 }
 
@@ -217,9 +223,35 @@ function setupLayoutWatcher() {
     const nowIsMobile = isMobileLayout();
     if (nowIsMobile !== _lastIsMobile) {
       _lastIsMobile = nowIsMobile;
+      applyLayoutClass();
       renderUI();
     }
   });
+}
+
+function applyLayoutClass() {
+  // Only enable card layout when JS is running (prevents "blank page" if JS fails)
+  if (!document.body) return;
+  if (isMobileLayout()) {
+    document.body.classList.add("mobile-layout");
+  } else {
+    document.body.classList.remove("mobile-layout");
+  }
+}
+
+function showCardMessage(message, isError) {
+  const cardContainer = document.getElementById("cardContainer");
+  if (!cardContainer) return;
+  cardContainer.innerHTML = `<div style="padding:12px;${isError ? 'color:red;' : ''}">${escapeHtml(message)}</div>`;
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function clearTable() {
