@@ -3,7 +3,7 @@
 // Global variables
 let raceData = [];
 let originalRaceData = [];
-let columnSortDirections = [false, false, false, false, false, false, false];
+let columnSortDirections = [];
 let isDevelopmentServer = false;
 
 const COLUMN_NAMES = [
@@ -14,7 +14,6 @@ const COLUMN_NAMES = [
   "FinishTime",
   "IsMarathon",
   "OfficialEntrant",
-  "String",
   "Link",
   "Images"
 ];
@@ -27,12 +26,18 @@ function initializeApp() {
   // Determine if we're running on development server
   isDevelopmentServer = window.location.hostname === "localhost";
 
+  // Initialize sort direction state to match columns
+  columnSortDirections = Array(COLUMN_NAMES.length).fill(false);
+
   // Set up scroll button event listeners
   document.getElementById("scroll-up").addEventListener("click", scrollToTop);
   document.getElementById("scroll-down").addEventListener("click", scrollToBottom);
 
   // Load race data
   loadRaceData();
+
+  // Re-render when switching between mobile and desktop layouts
+  setupLayoutWatcher();
 }
 
 function scrollToTop() {
@@ -48,7 +53,7 @@ function scrollToBottom() {
 function loadRaceData() {
   // Show loading indicator
   const tableBody = document.getElementById("tableBody");
-  tableBody.innerHTML = "<tr><td colspan='10' style='text-align:center;'>Loading data...</td></tr>";
+  tableBody.innerHTML = "<tr><td colspan='9' style='text-align:center;'>Loading data...</td></tr>";
 
   fetch("races.json")
     .then(response => {
@@ -63,18 +68,18 @@ function loadRaceData() {
       }
       raceData = data;
       originalRaceData = JSON.parse(JSON.stringify(data)); // Deep copy
-      makeDisplayTable();
+      renderUI();
     })
     .catch(error => {
       console.error("Error fetching or processing data:", error);
-      tableBody.innerHTML = `<tr><td colspan='10' style='text-align:center;color:red;'>Error loading data: ${error.message}</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan='9' style='text-align:center;color:red;'>Error loading data: ${error.message}</td></tr>`;
     });
 }
 
 // ===== Event Handlers =====
 
 function handleCheckboxClick(columnKey) {
-  makeDisplayTable();
+  renderUI();
 }
 
 function handleResetClick() {
@@ -85,13 +90,13 @@ function handleResetClick() {
   elyOfficialEntrant.checked = false;
 
   // Reset sort directions
-  columnSortDirections = [false, false, false, false, false, false, false];
+  columnSortDirections = Array(COLUMN_NAMES.length).fill(false);
 
   // Reset data to original
   raceData = JSON.parse(JSON.stringify(originalRaceData)); // Deep copy
 
   // Update display
-  makeDisplayTable();
+  renderUI();
 }
 
 // ===== Data Processing =====
@@ -152,7 +157,7 @@ function sortTable(colKey) {
     }
   });
 
-  makeDisplayTable();
+  renderUI();
 }
 
 function handleNumericSort(aValue, bValue, isSortAscending) {
@@ -184,7 +189,50 @@ function handleTimeSort(aValue, bValue, isSortAscending) {
 // ===== UI Functions =====
 
 function makeDisplayTable() {
+  // Backwards-compatible name used throughout the app
+  renderUI();
+}
+
+function renderUI() {
   const displayData = filterDatacheck();
+  if (isMobileLayout()) {
+    renderCards(displayData);
+    clearTable();
+  } else {
+    renderTable(displayData);
+    clearCards();
+  }
+}
+
+function isMobileLayout() {
+  return window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+}
+
+let _lastIsMobile = null;
+function setupLayoutWatcher() {
+  if (!window.matchMedia) return;
+  _lastIsMobile = isMobileLayout();
+
+  window.addEventListener("resize", () => {
+    const nowIsMobile = isMobileLayout();
+    if (nowIsMobile !== _lastIsMobile) {
+      _lastIsMobile = nowIsMobile;
+      renderUI();
+    }
+  });
+}
+
+function clearTable() {
+  const tableBody = document.getElementById("tableBody");
+  if (tableBody) tableBody.innerHTML = "";
+}
+
+function clearCards() {
+  const cardContainer = document.getElementById("cardContainer");
+  if (cardContainer) cardContainer.innerHTML = "";
+}
+
+function renderTable(displayData) {
   const tableBody = document.getElementById("tableBody");
 
   // Create a document fragment for better performance
@@ -212,10 +260,6 @@ function makeDisplayTable() {
       } else if (key === "IsMarathon" || key === "OfficialEntrant") {
         cell.textContent = keyValue === "TRUE" ? "✓" : "";
         cell.style.textAlign = "center";
-      } else if (key === "String") {
-        // Use safer innerHTML assignment
-        const sanitized = rowData[key].replace(/<\/BR>/gi, '<br>');
-        cell.innerHTML = sanitized;
       } else {
         cell.textContent = rowData[key] || "";
       }
@@ -227,6 +271,132 @@ function makeDisplayTable() {
   });
 
   tableBody.appendChild(fragment);
+}
+
+function renderCards(displayData) {
+  const cardContainer = document.getElementById("cardContainer");
+  if (!cardContainer) return;
+
+  const fragment = document.createDocumentFragment();
+  cardContainer.innerHTML = "";
+
+  displayData.forEach((rowData) => {
+    const details = document.createElement("details");
+    details.className = "race-card";
+
+    const summary = document.createElement("summary");
+    summary.className = "race-card-summary";
+
+    const order = document.createElement("span");
+    order.className = "pill";
+    order.textContent = rowData.OverallOrder || "";
+
+    const mar = document.createElement("span");
+    mar.className = "pill";
+    mar.textContent = rowData.MarathonNumber || "";
+
+    const name = document.createElement("span");
+    name.className = "race-name";
+    name.textContent = rowData.RaceName || "";
+
+    summary.appendChild(order);
+    summary.appendChild(mar);
+    summary.appendChild(name);
+
+    const content = document.createElement("div");
+    content.className = "race-card-details";
+
+    addDetailRow(content, "Date", rowData.Date || "");
+    addDetailRow(content, "Finish", rowData.FinishTime || "");
+    addDetailRow(content, "Marathon/Ultra", rowData.IsMarathon === "TRUE" ? "✓" : "");
+    addDetailRow(content, "Official entrant", rowData.OfficialEntrant === "TRUE" ? "✓" : "");
+
+    // Playlist/Link
+    const linkValue = document.createElement("div");
+    linkValue.className = "value";
+    if (Array.isArray(rowData.Link) && rowData.Link.length > 0) {
+      const link = rowData.Link[0];
+      if (link && link.URL && link.Desc) {
+        const anchor = document.createElement("a");
+        anchor.href = link.URL;
+        anchor.textContent = link.Desc;
+        anchor.target = "_blank";
+        anchor.rel = "noopener noreferrer";
+        linkValue.appendChild(anchor);
+      }
+    }
+    addDetailRowNode(content, "Playlist", linkValue);
+
+    // Images
+    const imagesValue = document.createElement("div");
+    imagesValue.className = "value";
+    imagesValue.appendChild(createImagesLinks(rowData.Images, rowData, displayData));
+    addDetailRowNode(content, "Images", imagesValue);
+
+    details.appendChild(summary);
+    details.appendChild(content);
+    fragment.appendChild(details);
+  });
+
+  cardContainer.appendChild(fragment);
+}
+
+function addDetailRow(container, labelText, valueText) {
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = labelText;
+
+  const value = document.createElement("div");
+  value.className = "value";
+  value.textContent = valueText;
+
+  container.appendChild(label);
+  container.appendChild(value);
+}
+
+function addDetailRowNode(container, labelText, valueNode) {
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = labelText;
+
+  container.appendChild(label);
+  container.appendChild(valueNode);
+}
+
+function createImagesLinks(imgs, rowData, displayData) {
+  const imageContainer = document.createElement("div");
+  imageContainer.className = "image-links-container";
+
+  if (!Array.isArray(imgs) || imgs.length === 0) {
+    return imageContainer;
+  }
+
+  let characterCount = 0;
+  imgs.forEach((imgPath, index) => {
+    if (!imgPath) return;
+    characterCount += imgPath.length;
+
+    const anchor = document.createElement("a");
+    anchor.href = "#";
+    anchor.textContent = imgPath;
+    anchor.dataset.index = index;
+    anchor.dataset.imagePath = imgPath;
+    anchor.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (window.ImageViewer && rowData) {
+        window.ImageViewer.openImageViewer(imgs, index, rowData, displayData);
+      }
+    });
+
+    imageContainer.appendChild(anchor);
+
+    if (characterCount > 85) {
+      imageContainer.appendChild(document.createElement("br"));
+      characterCount = 0;
+    }
+  });
+
+  return imageContainer;
 }
 
 function renderLinkCell(cell, links) {

@@ -68,6 +68,12 @@ body {
 }
 
 /* Table styles */
+.table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 table {
     font-family: Verdana, Arial, sans-serif;
     font-size: 10px;
@@ -78,6 +84,10 @@ table {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+#dataTable {
+    min-width: 1100px;
 }
 
 th {
@@ -124,18 +134,18 @@ td:nth-child(2) {
 
 th:nth-child(3),
 td:nth-child(3) {
-    width: 14%;
+    width: 18%;
 }
 
 th:nth-child(4),
 td:nth-child(4) {
-    width: 6%;
+    width: 8%;
     text-align: center;
 }
 
 th:nth-child(5),
 td:nth-child(5) {
-    width: 6%;
+    width: 8%;
     text-align: center;
 }
 
@@ -153,18 +163,13 @@ td:nth-child(7) {
 
 th:nth-child(8),
 td:nth-child(8) {
-    width: 19%;
+    width: 12%;
+    text-align: center;
 }
 
 th:nth-child(9),
 td:nth-child(9) {
-    width: 6%;
-    text-align: center;
-}
-
-th:nth-child(10),
-td:nth-child(10) {
-    width: 25%;
+    width: 35%;
 }
 
 /* Checkbox styling for filters */
@@ -251,6 +256,100 @@ thead th {
         padding: 5px;
         font-size: 9px;
     }
+
+    /* Switch to mobile card layout */
+    .table-wrap {
+        display: none;
+    }
+
+    .card-container {
+        display: block;
+        padding: 10px;
+    }
+}
+
+/* Mobile card layout (hidden on desktop) */
+.card-container {
+    display: none;
+}
+
+.race-card {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin: 10px 0;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    overflow: hidden;
+}
+
+.race-card-summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 12px;
+    background-color: var(--primary-bg);
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+}
+
+/* Hide default marker in some browsers */
+.race-card-summary::-webkit-details-marker {
+    display: none;
+}
+
+.race-card-summary .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    font-weight: bold;
+}
+
+.race-card-summary .race-name {
+    font-weight: bold;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.race-card-details {
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 6px 10px;
+    font-size: 12px;
+}
+
+.race-card-details .label {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.race-card-details .value {
+    overflow-wrap: anywhere;
+}
+
+.race-card-details .image-links-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.race-card-details .image-links-container a {
+    color: #0066cc;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.race-card-details .image-links-container a:hover {
+    text-decoration: underline;
+    color: #004080;
 }
 
 /* Image links in table cell */
