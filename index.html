@@ -19,11 +19,18 @@
 <body>
     <header class="topDivContainer">
         <h1 class="page-title">Joe's Races</h1>
-        <div class="dynamic-text-container">
-            <div id="dynamicText" class="dynamic-text">***</div>
-            <div>
-                <img src="./assets/refresh-icon.png" alt="Clear sort and filters" onclick="handleResetClick()"
-                    title="Reset filters and sorts">
+        <div class="header-controls">
+            <div class="dynamic-text-container">
+                <div id="dynamicText" class="dynamic-text">***</div>
+                <div>
+                    <img src="./assets/refresh-icon.png" alt="Clear sort and filters" onclick="handleResetClick()"
+                        title="Reset filters and sorts">
+                </div>
+            </div>
+            <div class="search-container" aria-label="Search races">
+                <label class="sr-only" for="searchInput">Search Race Name</label>
+                <input id="searchInput" class="search-input" type="search" inputmode="search"
+                    placeholder="Search Race Name…" autocomplete="off" spellcheck="false" oninput="handleSearchInput()">
             </div>
         </div>
     </header>

@@ -5,6 +5,7 @@ let raceData = [];
 let originalRaceData = [];
 let columnSortDirections = [];
 let isDevelopmentServer = false;
+let raceNameSearchQuery = "";
 
 const COLUMN_NAMES = [
   "OverallOrder",
@@ -95,6 +96,11 @@ function handleResetClick() {
   elyIsMarathon.checked = false;
   elyOfficialEntrant.checked = false;
 
+  // Reset search
+  raceNameSearchQuery = "";
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) searchInput.value = "";
+
   // Reset sort directions
   columnSortDirections = Array(COLUMN_NAMES.length).fill(false);
 
@@ -102,6 +108,12 @@ function handleResetClick() {
   raceData = JSON.parse(JSON.stringify(originalRaceData)); // Deep copy
 
   // Update display
+  renderUI();
+}
+
+function handleSearchInput() {
+  const searchInput = document.getElementById("searchInput");
+  raceNameSearchQuery = (searchInput ? searchInput.value : "").trim().toLowerCase();
   renderUI();
 }
 
@@ -122,6 +134,14 @@ function filterDatacheck() {
   // Filter for official entrants
   if (elyOfficialEntrant && elyOfficialEntrant.checked) {
     filteredData = filteredData.filter(item => item["OfficialEntrant"] === "TRUE");
+  }
+
+  // Filter by Race Name search
+  if (raceNameSearchQuery) {
+    filteredData = filteredData.filter(item => {
+      const name = (item && item["RaceName"] != null) ? String(item["RaceName"]) : "";
+      return name.toLowerCase().includes(raceNameSearchQuery);
+    });
   }
 
   // Update header with count information
