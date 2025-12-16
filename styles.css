@@ -293,9 +293,16 @@ thead th {
         align-items: flex-start;
     }
 
+    /* Remove refresh + "Displaying ..." from mobile only */
+    .dynamic-text-container {
+        display: none;
+    }
+
     .search-input {
         width: 100%;
-        max-width: 520px;
+        max-width: none;
+        font-size: 16px;
+        padding: 12px 14px;
     }
 
     .dynamic-text {
@@ -331,11 +338,6 @@ thead th {
 
 /* Enable card layout only when JS marks the page as mobile-layout */
 body.mobile-layout .table-wrap {
-    display: none;
-}
-
-/* Remove refresh + "Displaying ..." from mobile only */
-body.mobile-layout .dynamic-text-container {
     display: none;
 }
 
