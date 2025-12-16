@@ -52,6 +52,13 @@
             </table>
         </div>
 
+        <div id="mobileListHeader" class="mobile-list-header" aria-label="Races list headers (mobile)">
+            <button type="button" class="mobile-list-header-btn" onclick="sortTable('OverallOrder')">Order</button>
+            <button type="button" class="mobile-list-header-btn" onclick="sortTable('MarathonNumber')">Mar. #</button>
+            <button type="button" class="mobile-list-header-btn mobile-list-header-btn--name"
+                onclick="sortTable('RaceName')">Race Name</button>
+        </div>
+
         <section id="cardContainer" class="card-container" aria-label="Races (mobile cards)">
             <!-- Cards are dynamically inserted here -->
         </section>

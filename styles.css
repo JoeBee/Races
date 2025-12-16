@@ -273,9 +273,55 @@ thead th {
     display: none;
 }
 
+/* Mobile 3-column list header (shown only when cards are enabled) */
+.mobile-list-header {
+    display: none;
+}
+
 /* Enable card layout only when JS marks the page as mobile-layout */
 body.mobile-layout .table-wrap {
     display: none;
+}
+
+body.mobile-layout .mobile-list-header {
+    display: grid;
+    grid-template-columns: 70px 70px 1fr;
+    gap: 10px;
+    padding: 10px 12px;
+    background-color: var(--primary-bg);
+    border-bottom: 2px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 15;
+    box-shadow: 0 1px 2px var(--shadow-color);
+}
+
+body.mobile-layout .mobile-list-header-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    background: transparent;
+    padding: 6px 8px;
+    font: inherit;
+    font-weight: bold;
+    font-size: 12px;
+    color: var(--text-color);
+    text-align: center;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+body.mobile-layout .mobile-list-header-btn--name {
+    text-align: left;
+}
+
+body.mobile-layout .mobile-list-header-btn:hover {
+    background-color: var(--hover-bg);
+}
+
+body.mobile-layout .mobile-list-header-btn:focus-visible {
+    outline: 2px solid #6aa6ff;
+    outline-offset: 2px;
 }
 
 body.mobile-layout .card-container {
