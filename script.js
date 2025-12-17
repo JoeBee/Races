@@ -146,6 +146,7 @@ function filterDatacheck() {
 
   // Update header with count information
   writeHeaderInfo(filteredData.length, raceData.length);
+  updateMobileCount(filteredData.length, raceData.length);
 
   return filteredData;
 }
@@ -339,20 +340,20 @@ function renderCards(displayData) {
     const summary = document.createElement("summary");
     summary.className = "race-card-summary";
 
-    const order = document.createElement("span");
-    order.className = "pill";
-    order.textContent = rowData.OverallOrder || "";
-
     const mar = document.createElement("span");
     mar.className = "pill";
     mar.textContent = rowData.MarathonNumber || "";
+
+    const year = document.createElement("span");
+    year.className = "pill";
+    year.textContent = getYearFromDateField(rowData.Date);
 
     const name = document.createElement("span");
     name.className = "race-name";
     name.textContent = rowData.RaceName || "";
 
-    summary.appendChild(order);
     summary.appendChild(mar);
+    summary.appendChild(year);
     summary.appendChild(name);
 
     const content = document.createElement("div");
@@ -528,6 +529,12 @@ function writeHeaderInfo(iDisplaying, iTotalRecs) {
   myDiv.textContent = displayText;
 }
 
+function updateMobileCount(iDisplaying, iTotalRecs) {
+  const el = document.getElementById("mobileCount");
+  if (!el) return;
+  el.textContent = `${iDisplaying}/${iTotalRecs}`;
+}
+
 // ===== Helper Functions =====
 
 /**
@@ -575,6 +582,14 @@ function parseDate(dateString) {
   const year = parseInt(parts[2], 10);
 
   return new Date(year, month, day);
+}
+
+function getYearFromDateField(dateString) {
+  if (isValidDate(dateString)) {
+    return String(parseDate(dateString).getFullYear());
+  }
+  const match = String(dateString || "").match(/(\d{4})/);
+  return match ? match[1] : "";
 }
 
 /**

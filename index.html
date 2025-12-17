@@ -31,6 +31,7 @@
                 <label class="sr-only" for="searchInput">Search Race Name</label>
                 <input id="searchInput" class="search-input" type="search" inputmode="search" placeholder="Search…"
                     autocomplete="off" spellcheck="false" oninput="handleSearchInput()">
+                <span id="mobileCount" class="mobile-count" aria-label="Races shown / total" aria-live="polite"></span>
             </div>
         </div>
     </header>
@@ -60,8 +61,8 @@
         </div>
 
         <div id="mobileListHeader" class="mobile-list-header" aria-label="Races list headers (mobile)">
-            <button type="button" class="mobile-list-header-btn" onclick="sortTable('OverallOrder')">Order</button>
             <button type="button" class="mobile-list-header-btn" onclick="sortTable('MarathonNumber')">Mar. #</button>
+            <button type="button" class="mobile-list-header-btn" onclick="sortTable('Date')">Year</button>
             <button type="button" class="mobile-list-header-btn mobile-list-header-btn--name"
                 onclick="sortTable('RaceName')">Race Name</button>
         </div>
